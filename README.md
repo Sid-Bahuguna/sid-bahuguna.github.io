@@ -11,16 +11,7 @@ This project is designed to help security researchers, ethical hackers, and cybe
 - 🖼 **Responsive Design** – Works seamlessly on desktop, tablet, and mobile.  
 - 🛡 **Security-Focused** – Built with best practices to prevent common vulnerabilities.  
 - 🗂 **Category & Tag Support** – Organize research topics efficiently.  
-- 💬 **Comment System** – Engage with readers (optional, can be disabled).  
-
----
-
-## **🛠 Tech Stack**
-- **Frontend:** HTML5, CSS3, JavaScript (or React/Vue if applicable)  
-- **Backend:** Node.js with Express (or your chosen backend framework)  
-- **Database:** MongoDB / MySQL / PostgreSQL  
-- **Authentication:** JWT-based secure login system  
-- **Deployment:** Docker / Vercel / Heroku / Custom server  
+- 💬 **Comment System** – Engage with readers (optional, can be disabled).    
 
 ---
 
