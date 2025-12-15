@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Research Lab</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '⚡';
+            font-size: 1.8rem;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .nav-section {
+            padding: 20px 0;
+        }
+
+        .nav-title {
+            padding: 8px 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 2px 0;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 8px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            background: var(--bg-tertiary);
+            border-left-color: var(--accent-primary);
+            padding-left: 25px;
+        }
+
+        .nav-links a.active {
+            background: var(--bg-tertiary);
+            border-left-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .hero {
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .blog-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-secondary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .blog-category.pentest {
+            background: var(--danger);
+        }
+
+        .blog-category.research {
+            background: var(--success);
+        }
+
+        .blog-category.exploit {
+            background: var(--warning);
+        }
+
+        .blog-title {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .blog-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .blog-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .blog-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .blog-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* Code Blocks */
+        code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">CyberSec Lab</a>
+                <p class="tagline">Research | Pentesting | Red Team</p>
+            </div>
+
+            <nav class="nav-section">
+                <div class="nav-title">Categories</div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active">All Posts</a></li>
+                    <li><a href="#">Web Application Security</a></li>
+                    <li><a href="#">Network Penetration</a></li>
+                    <li><a href="#">Active Directory</a></li>
+                    <li><a href="#">Exploit Development</a></li>
+                    <li><a href="#">Red Team Operations</a></li>
+                    <li><a href="#">Security Research</a></li>
+                </ul>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-title">Methodologies</div>
+                <ul class="nav-links">
+                    <li><a href="#">OWASP Top 10</a></li>
+                    <li><a href="#">Bug Bounty</a></li>
+                    <li><a href="#">CTF Writeups</a></li>
+                    <li><a href="#">Privilege Escalation</a></li>
+                    <li><a href="#">Post Exploitation</a></li>
+                </ul>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-title">Resources</div>
+                <ul class="nav-links">
+                    <li><a href="#">Tools & Scripts</a></li>
+                    <li><a href="#">Payloads</a></li>
+                    <li><a href="#">Cheatsheets</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="breadcrumb">Home / Blog</div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">☀️</span>
+                    <span id="theme-text">Light Mode</span>
+                </button>
+            </div>
+
+            <div class="hero">
+                <h1>Latest Security Research</h1>
+                <p>Exploring vulnerabilities, exploits, and penetration testing techniques. From web application security to red team operations.</p>
+            </div>
+
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <span class="blog-category pentest">Pentest</span>
+                    <h2 class="blog-title">Advanced SQL Injection Techniques</h2>
+                    <p class="blog-excerpt">Deep dive into modern SQL injection bypasses including WAF evasion, time-based blind injection, and exploiting stored procedures...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 15, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category research">Research</span>
+                    <h2 class="blog-title">API Security Testing Methodology</h2>
+                    <p class="blog-excerpt">Comprehensive guide to testing REST and GraphQL APIs, including authentication bypass, rate limit abuse, and IDOR vulnerabilities...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 12, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category exploit">Exploit</span>
+                    <h2 class="blog-title">Zero-Day in Legacy Systems</h2>
+                    <p class="blog-excerpt">Discovering and exploiting an authentication bypass in outdated enterprise software. Full disclosure with proof-of-concept code...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 10, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category pentest">Pentest</span>
+                    <h2 class="blog-title">Active Directory Attack Paths</h2>
+                    <p class="blog-excerpt">Mapping and exploiting AD trust relationships, Kerberos attacks, and privilege escalation techniques in Windows environments...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 8, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category research">Research</span>
+                    <h2 class="blog-title">XSS Filter Bypass in 2025</h2>
+                    <p class="blog-excerpt">Modern XSS payloads that bypass common WAFs and CSP policies. Testing against real-world applications and their defense mechanisms...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 5, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category exploit">Exploit</span>
+                    <h2 class="blog-title">Container Escape Techniques</h2>
+                    <p class="blog-excerpt">Breaking out of Docker and Kubernetes containers. Exploiting misconfigurations and kernel vulnerabilities for host compromise...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Dec 1, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category pentest">Pentest</span>
+                    <h2 class="blog-title">Cloud Security Misconfigurations</h2>
+                    <p class="blog-excerpt">Common AWS, Azure, and GCP security issues. From exposed S3 buckets to privilege escalation in cloud IAM policies...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Nov 28, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category research">Research</span>
+                    <h2 class="blog-title">SSRF to Internal Network Access</h2>
+                    <p class="blog-excerpt">Exploiting server-side request forgery to pivot into internal networks. Techniques for port scanning, cloud metadata access, and more...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Nov 25, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <span class="blog-category exploit">Exploit</span>
+                    <h2 class="blog-title">Reverse Shell Cheat Sheet</h2>
+                    <p class="blog-excerpt">Complete guide to generating reverse shells in various languages. Includes obfuscation techniques and AV bypass methods...</p>
+                    <div class="blog-meta">
+                        <span class="blog-date">Nov 20, 2025</span>
+                        <a href="#" class="blog-link">Read More →</a>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <div class="footer-content">
+                    <p>© 2025 CyberSec Research Lab. All research for educational purposes only.</p>
+                    <div class="social-links">
+                        <a href="#">GitHub</a>
+                        <a href="#">Twitter</a>
+                        <a href="#">LinkedIn</a>
+                        <a href="#">RSS</a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
