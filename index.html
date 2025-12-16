@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SBOW Infosec</title>
+    <title>CyberSec Research Lab</title>
     <style>
         :root {
             --bg-primary: #0d1117;
@@ -410,7 +410,7 @@
 
         <main class="main-content">
             <div class="top-bar">
-                <div class="breadcrumb">Home / Blog</div>
+                <div class="breadcrumb"></div>
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">☀️</span>
                     <span id="theme-text">Light Mode</span>
@@ -443,6 +443,14 @@
     <script>
         // Blog posts data - ADD YOUR NEW POSTS HERE
         const blogPosts = [
+            {
+                id: 'react2shell-cve-2025-55182',
+                category: 'cves',
+                title: 'CVE-2025-55182 (React2Shell): Critical RCE in React Server Components',
+                excerpt: 'Analysis of the maximum severity React vulnerability enabling unauthenticated remote code execution. Active exploitation detected within hours of disclosure...',
+                date: 'Dec 16, 2025',
+                file: 'posts/react2shell-cve-2025-55182.html'
+            },
             {
                 id: 'sql-injection',
                 category: 'web-security',
