@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Security Testing Methodology: Complete Guide - SBOW Infosec</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-danger: #f85149;
+            --accent-success: #3fb950;
+            --accent-warning: #d29922;
+            --border-color: #30363d;
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --border-color: #d0d7de;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        article {
+            background-color: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .category-badge {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            border-left: 4px solid var(--accent-primary);
+            padding-left: 15px;
+        }
+
+        h3 {
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .highlight-box {
+            background-color: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .highlight-box strong {
+            color: var(--accent-primary);
+        }
+
+        code {
+            background-color: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-success);
+            font-size: 14px;
+        }
+
+        pre {
+            background-color: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--accent-success);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-tertiary);
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+            opacity: 0.8;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .tool-card {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent-primary);
+            background-color: var(--bg-primary);
+        }
+
+        .tool-card h4 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-success);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🛡️ SBOW Infosec</div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Blog</a>
+
+        <article>
+            <div class="post-meta">
+                <span class="category-badge">API Security</span>
+                <span>Dec 18, 2024</span>
+                <span>Estimated read: 15 minutes</span>
+            </div>
+
+            <h1>API Security Testing Methodology: A Comprehensive Guide</h1>
+
+            <p>APIs have become the backbone of modern applications, powering everything from mobile apps to IoT devices and microservices architectures. However, with this increased reliance comes significant security challenges. Recent breaches—including the Sensitive Messages exposure (650,000 messages), DeepSeek database leak, and US Treasury Department attack—demonstrate that API vulnerabilities are not theoretical concerns but active threats costing organizations millions of dollars.</p>
+
+            <h2>Understanding API Security Testing</h2>
+
+            <p>API Security Testing is the process of using Dynamic Application Security Testing (DAST) and verb fuzzing techniques to identify security misconfigurations and vulnerabilities in Application Programming Interfaces. The goal is to ensure that APIs adhere to organizational policies, industry best practices, and published specifications while being resilient against malicious attacks.</p>
+
+            <div class="highlight-box">
+                <strong>Critical Statistic:</strong> API breaches cost organizations an average of $4.88 million globally in 2024, with 57% of companies experiencing API-related breaches in the past two years.
+            </div>
+
+            <h2>Why API Security Testing Matters</h2>
+
+            <h3>Key Reasons for Prioritizing API Security:</h3>
+
+            <ul>
+                <li><strong>Extensive Attack Surface:</strong> APIs expose more endpoints than traditional web applications, multiplying potential attack vectors</li>
+                <li><strong>Data Sensitivity:</strong> APIs often handle sensitive data including credentials, personal information, and business logic</li>
+                <li><strong>Integrated Systems:</strong> APIs connect to third-party services, creating interdependencies and cascading vulnerability risks</li>
+                <li><strong>Legacy & Undocumented APIs:</strong> "Shadow APIs" often exist without security review or proper documentation</li>
+                <li><strong>Rapid Development:</strong> Fast-paced development cycles often leave security as an afterthought</li>
+            </ul>
+
+            <h2>The 10 OWASP API Security Risks (2023)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Vulnerability</th>
+                        <th>Description</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A1</td>
+                        <td>Broken Object Level Authorization</td>
+                        <td>Attackers manipulate IDs to access unauthorized resources</td>
+                        <td>Unauthorized data access</td>
+                    </tr>
+                    <tr>
+                        <td>A2</td>
+                        <td>Broken Authentication</td>
+                        <td>Weak or missing authentication mechanisms</td>
+                        <td>Account takeover</td>
+                    </tr>
+                    <tr>
+                        <td>A3</td>
+                        <td>Broken Object Property Authorization</td>
+                        <td>Users access properties they shouldn't be able to modify</td>
+                        <td>Privilege escalation</td>
+                    </tr>
+                    <tr>
+                        <td>A4</td>
+                        <td>Unrestricted Resource Consumption</td>
+                        <td>No rate limiting or request throttling</td>
+                        <td>DoS attacks, abuse</td>
+                    </tr>
+                    <tr>
+                        <td>A5</td>
+                        <td>Broken Function Level Authorization</td>
+                        <td>Users access functions beyond their permissions</td>
+                        <td>Unauthorized actions</td>
+                    </tr>
+                    <tr>
+                        <td>A6</td>
+                        <td>Unrestricted Access to Sensitive Business Flows</td>
+                        <td>Critical business operations lack proper controls</td>
+                        <td>Business disruption</td>
+                    </tr>
+                    <tr>
+                        <td>A7</td>
+                        <td>Server-Side Request Forgery (SSRF)</td>
+                        <td>API makes requests to attacker-controlled URLs</td>
+                        <td>Internal system compromise</td>
+                    </tr>
+                    <tr>
+                        <td>A8</td>
+                        <td>Security Misconfiguration</td>
+                        <td>Insecure defaults, incomplete setups</td>
+                        <td>Multiple attack vectors</td>
+                    </tr>
+                    <tr>
+                        <td>A9</td>
+                        <td>Improper Inventory Management</td>
+                        <td>Untracked or forgotten API endpoints</td>
+                        <td>Shadow API exploitation</td>
+                    </tr>
+                    <tr>
+                        <td>A10</td>
+                        <td>Unsafe Consumption of APIs</td>
+                        <td>Trusting third-party APIs without verification</td>
+                        <td>Indirect compromise</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Step-by-Step API Security Testing Methodology</h2>
+
+            <h3>Phase 1: API Discovery & Inventory</h3>
+
+            <p>Before you can secure APIs, you must know they exist.</p>
+
+            <div class="highlight-box">
+                <strong>Action Items:</strong>
+                <ul>
+                    <li>Document every API endpoint (REST, GraphQL, gRPC, SOAP)</li>
+                    <li>Identify and catalog internal microservice communications</li>
+                    <li>Discover third-party APIs your applications consume</li>
+                    <li>Uncover "shadow APIs" deployed without security review</li>
+                    <li>Create API specifications (OpenAPI/Swagger, GraphQL schemas)</li>
+                    <li>Classify endpoints by sensitivity level and functionality</li>
+                </ul>
+            </div>
+
+            <p>Use tools like Akto for automatic API discovery and inventory management. Maintain a central registry that tracks API versions, deployment status, and deprecation timelines.</p>
+
+            <h3>Phase 2: Documentation Analysis</h3>
+
+            <p>Examine OpenAPI/Swagger documentation for specification gaps and potential vulnerabilities:</p>
+
+            <ul>
+                <li>Validate that documentation matches actual API behavior</li>
+                <li>Identify parameters, request/response formats, and expected behaviors</li>
+                <li>Review authentication and authorization requirements</li>
+                <li>Look for deprecated or debug endpoints that should be removed</li>
+                <li>Check for sensitive data exposure in documentation</li>
+            </ul>
+
+            <h3>Phase 3: Authentication & Authorization Testing</h3>
+
+            <p>Authentication and authorization flaws are among the most critical API vulnerabilities.</p>
+
+            <div class="highlight-box">
+                <strong>Test Cases:</strong>
+                <ul class="checklist">
+                    <li>Missing or weak authentication mechanisms</li>
+                    <li>Expired or invalid token acceptance</li>
+                    <li>JWT token manipulation (changing algorithms, removing signatures)</li>
+                    <li>Broken object-level authorization (BOLA/IDOR vulnerabilities)</li>
+                    <li>Function-level authorization bypass</li>
+                    <li>Cross-tenant authorization failures</li>
+                    <li>API key exposure or hardcoding</li>
+                    <li>OAuth2/OpenID Connect misconfigurations</li>
+                </ul>
+            </div>
+
+            <h3>Phase 4: Input Validation & Injection Testing</h3>
+
+            <p>Injection attacks remain among the most dangerous API vulnerabilities. Test comprehensive payloads:</p>
+
+            <ul>
+                <li><strong>SQL Injection:</strong> <code>' OR '1'='1</code>, <code>'; DROP TABLE users--</code></li>
+                <li><strong>Command Injection:</strong> <code>; ls -la</code>, <code>| cat /etc/passwd</code></li>
+                <li><strong>XML/JSON Injection:</strong> Malformed data, XXE payloads</li>
+                <li><strong>LDAP Injection:</strong> Directory traversal attempts</li>
+                <li><strong>Parameter Tampering:</strong> Modifying hidden fields, IDs, prices</li>
+                <li><strong>Path Traversal:</strong> <code>../../../etc/passwd</code></li>
+                <li><strong>NoSQL Injection:</strong> JavaScript operators like <code>{$ne: null}</code></li>
+            </ul>
+
+            <h3>Phase 5: Error Handling & Information Disclosure</h3>
+
+            <p>Improper error handling can leak sensitive information to attackers:</p>
+
+            <div class="highlight-box">
+                <strong>Testing Focus:</strong>
+                <ul>
+                    <li>Analyze error messages for sensitive data leakage</li>
+                    <li>Check for stack traces in error responses</li>
+                    <li>Verify proper error codes (400/401/403/500)</li>
+                    <li>Test behavior under exceptional conditions (null inputs, type mismatches)</li>
+                    <li>Look for information disclosure in HTTP headers</li>
+                    <li>Test API responses for unintended data exposure</li>
+                </ul>
+            </div>
+
+            <h3>Phase 6: Rate Limiting & Resource Consumption</h3>
+
+            <p>APIs without proper rate limiting are vulnerable to abuse and denial-of-service attacks:</p>
+
+            <ul>
+                <li>Verify rate limiting is enforced on all endpoints</li>
+                <li>Test rate limit bypass techniques (header manipulation, IP spoofing)</li>
+                <li>Assess timeout configurations</li>
+                <li>Test resource consumption limits (large file uploads, batch operations)</li>
+                <li>Verify pagination limits to prevent data dumping</li>
+                <li>Test concurrent request handling</li>
+            </ul>
+
+            <h3>Phase 7: Business Logic Vulnerability Testing</h3>
+
+            <p>Advanced testing for workflow and business logic flaws:</p>
+
+            <ul>
+                <li>Test critical business flows (payment processing, user creation, data modification)</li>
+                <li>Verify proper state transitions and workflow restrictions</li>
+                <li>Test for race conditions in concurrent operations</li>
+                <li>Verify proper validation of business constraints</li>
+                <li>Test workflows with manipulated or skipped steps</li>
+                <li>Check for privilege escalation through business logic</li>
+            </ul>
+
+            <h3>Phase 8: API Gateway & Infrastructure Testing</h3>
+
+            <ul>
+                <li>Verify API gateway security configurations</li>
+                <li>Test SSL/TLS implementation and certificate validation</li>
+                <li>Check for security headers (HSTS, CSP, X-Frame-Options)</li>
+                <li>Verify encryption of sensitive data in transit and at rest</li>
+                <li>Test infrastructure for DDoS protection</li>
+                <li>Verify API versioning and deprecation procedures</li>
+            </ul>
+
+            <h3>Phase 9: Data Protection & Privacy Testing</h3>
+
+            <ul>
+                <li>Verify sensitive data is encrypted in transit (HTTPS/TLS)</li>
+                <li>Check encryption at rest for stored data</li>
+                <li>Test for PII (Personally Identifiable Information) exposure</li>
+                <li>Verify GDPR/HIPAA/PCI-DSS compliance where applicable</li>
+                <li>Test data retention and deletion mechanisms</li>
+                <li>Verify proper logging without sensitive data exposure</li>
+            </ul>
+
+            <h3>Phase 10: Compliance & Documentation</h3>
+
+            <ul>
+                <li>Ensure compliance with industry standards (OWASP, NIST)</li>
+                <li>Document all findings with severity levels and remediation guidance</li>
+                <li>Establish clear workflows for vulnerability remediation</li>
+                <li>Maintain audit trails and compliance evidence</li>
+                <li>Regular testing cycles aligned with development releases</li>
+            </ul>
+
+            <h2>API Security Testing Tools</h2>
+
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h4>Burp Suite</h4>
+                    <p>Enterprise-grade web vulnerability scanner with API testing capabilities, intruder for fuzzing, and repeater for manual testing.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>Postman</h4>
+                    <p>API development platform with security testing features, automated scanning, and environment management.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>OWASP ZAP</h4>
+                    <p>Free, open-source security scanner designed for automated and manual API security testing.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>StackHawk</h4>
+                    <p>Continuous API security testing platform integrated into CI/CD pipelines with detailed vulnerability reporting.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>Akto</h4>
+                    <p>Specialized API discovery and testing tool for identifying shadow APIs and testing security.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>Snyk</h4>
+                    <p>Dependency scanner and security platform for identifying vulnerabilities in API dependencies.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>Insomnia</h4>
+                    <p>API client with security testing features for manual and automated API security assessment.</p>
+                </div>
+                <div class="tool-card">
+                    <h4>Semgrep</h4>
+                    <p>Static analysis tool for identifying API security issues in source code before deployment.</p>
+                </div>
+            </div>
+
+            <h2>Best Practices for API Security Testing</h2>
+
+            <h3>1. Shift-Left Security</h3>
+            <p>Integrate security testing into the early stages of development, not just before production deployment. Implement SAST (Static Application Security Testing) during code review and DAST during QA phases.</p>
+
+            <h3>2. Continuous Integration & Automation</h3>
+            <p>Automate security testing in CI/CD pipelines. Configure tests to run on pull requests and establish clear failure thresholds that balance security rigor with practical development needs.</p>
+
+            <h3>3. Threat Modeling</h3>
+            <p>Conduct threat modeling exercises to identify potential risks specific to your API architecture. Use frameworks like STRIDE or PASTA to systematically identify threats.</p>
+
+            <h3>4. Comprehensive Documentation</h3>
+            <p>Maintain accurate API documentation (OpenAPI/Swagger) that reflects actual behavior. Document security controls, authentication methods, and data sensitivity levels.</p>
+
+            <h3>5. Regular Testing Cycles</h3>
+            <p>API security testing shouldn't be a one-time activity. Establish regular testing schedules aligned with development releases and security patches.</p>
+
+            <h3>6. Third-Party API Assessment</h3>
+            <p>Don't trust third-party APIs by default. Evaluate security practices of API providers and monitor for vulnerabilities in consumed APIs.</p>
+
+            <h3>7. Team Training & Awareness</h3>
+            <p>Ensure developers understand common API vulnerabilities and secure coding practices. Share knowledge of recent API breaches and lessons learned.</p>
+
+            <h3>8. Clear Remediation Workflows</h3>
+            <p>Establish processes for how security findings move from discovery to remediation. Include clear SLAs for different severity levels and mechanisms for validation of fixes.</p>
+
+            <h2>Practical Example: Testing for BOLA Vulnerability</h2>
+
+            <p><strong>Scenario:</strong> An API endpoint <code>GET /api/users/{id}/profile</code> returns user profiles.</p>
+
+            <div class="highlight-box">
+                <strong>Testing Steps:</strong>
+                <ol>
+                    <li>Authenticate as User A (ID: 1001)</li>
+                    <li>Request your own profile: <code>GET /api/users/1001/profile</code> ✓ Success</li>
+                    <li>Attempt to access another user's profile: <code>GET /api/users/1002/profile</code></li>
+                    <li>If the request succeeds, you've found a BOLA vulnerability</li>
+                    <li>Test with invalid IDs, negative numbers, and SQL injection payloads</li>
+                    <li>Document the finding with severity level</li>
+                </ol>
+            </div>
+
+            <h2>Metrics & Reporting</h2>
+
+            <p>Track and report on key security metrics:</p>
+
+            <ul>
+                <li><strong>Vulnerabilities Found:</strong> Count by severity level (Critical, High, Medium, Low)</li>
+                <li><strong>Mean Time to Remediation (MTTR):</strong> How quickly vulnerabilities are fixed</li>
+                <li><strong>Test Coverage:</strong> Percentage of API endpoints tested</li>
+                <li><strong>Recurring Vulnerabilities:</strong> Identify patterns and systemic issues</li>
+                <li><strong>False Positive Rate:</strong> Minimize noise in automated testing</li>
+                <li><strong>Security Score:</strong> Overall API security posture over time</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+
+            <p>API security testing is not a one-time activity but an ongoing process that must be integrated into the entire software development lifecycle. By implementing this comprehensive methodology, organizations can significantly reduce their risk of API-related breaches and data compromise.</p>
+
+            <p>The cost of proactive security testing is far outweighed by the average $4.88 million cost of API breaches. Start with API discovery, establish a testing program aligned with OWASP API Security Top 10, and continuously improve your security posture through automation, threat modeling, and team training.</p>
+
+            <div class="highlight-box">
+                <strong>Next Steps:</strong>
+                <ul>
+                    <li>Conduct a complete API inventory for your organization</li>
+                    <li>Perform threat modeling on critical APIs</li>
+                    <li>Implement automated security testing in your CI/CD pipeline</li>
+                    <li>Train development teams on API security best practices</li>
+                    <li>Establish clear remediation workflows and metrics</li>
+                </ul>
+            </div>
+        </article>
+
+        <footer>
+            <p>&copy; 2024 SBOW Infosec. Content created for educational purposes only.</p>
+            <p>Always conduct security testing only on systems you own or have written permission to test.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.querySelector('.theme-toggle');
+            
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+                toggle.textContent = '☀️ Light Mode';
+            } else {
+                body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+                toggle.textContent = '🌙 Dark Mode';
+            }
+        }
+
+        // Load saved theme on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const toggle = document.querySelector('.theme-toggle');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                toggle.textContent = '☀️ Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
