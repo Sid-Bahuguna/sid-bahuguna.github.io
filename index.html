@@ -273,11 +273,6 @@
             border-top: 1px solid var(--border-color);
         }
 
-        .blog-date {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
         .blog-link {
             color: var(--accent-primary);
             text-decoration: none;
@@ -430,10 +425,9 @@
                 <div class="footer-content">
                     <p>© 2025 SBOW Infosec. All research for educational purposes only.</p>
                     <div class="social-links">
-                        <a href="https://github.com/yourusername" target="_blank">GitHub</a>
-                        <a href="https://twitter.com/yourusername" target="_blank">Twitter</a>
-                        <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn</a>
-                        <a href="rss.xml">RSS</a>
+                        <a href="https://github.com/Sid-Bahuguna" target="_blank">GitHub</a>
+                        <a href="hhttps://x.com/Sidhartg3" target="_blank">Twitter</a>
+                        <a href="www.linkedin.com/in/sidharth-bahuguna" target="_blank">LinkedIn</a>
                     </div>
                 </div>
             </footer>
@@ -448,7 +442,6 @@
                 category: 'cves',
                 title: 'CVE-2025-55182 (React2Shell): Critical RCE in React Server Components',
                 excerpt: 'Analysis of the maximum severity React vulnerability enabling unauthenticated remote code execution. Active exploitation detected within hours of disclosure...',
-                date: 'Dec 16, 2025',
                 file: 'posts/react2shell-cve-2025-55182.html'
             },
             {
@@ -456,7 +449,6 @@
                 category: 'web-security',
                 title: 'Advanced SQL Injection Techniques',
                 excerpt: 'Deep dive into modern SQL injection bypasses including WAF evasion, time-based blind injection, and exploiting stored procedures...',
-                date: 'Dec 15, 2025',
                 file: 'posts/sql-injection.html'
             },
             {
@@ -464,7 +456,6 @@
                 category: 'api-security',
                 title: 'API Security Testing Methodology',
                 excerpt: 'Comprehensive guide to testing REST and GraphQL APIs, including authentication bypass, rate limit abuse, and IDOR vulnerabilities...',
-                date: 'Dec 12, 2025',
                 file: 'posts/api-security.html'
             },
             {
@@ -472,7 +463,6 @@
                 category: 'cves',
                 title: 'CVE-2025-XXXX: Zero-Day in Legacy Systems',
                 excerpt: 'Discovering and exploiting an authentication bypass in outdated enterprise software. Full disclosure with proof-of-concept code...',
-                date: 'Dec 10, 2025',
                 file: 'posts/zero-day.html'
             },
             {
@@ -480,7 +470,6 @@
                 category: 'red-team',
                 title: 'Active Directory Attack Paths',
                 excerpt: 'Mapping and exploiting AD trust relationships, Kerberos attacks, and privilege escalation techniques in Windows environments...',
-                date: 'Dec 8, 2025',
                 file: 'posts/active-directory.html'
             },
             {
@@ -488,7 +477,6 @@
                 category: 'web-security',
                 title: 'XSS Filter Bypass in 2025',
                 excerpt: 'Modern XSS payloads that bypass common WAFs and CSP policies. Testing against real-world applications and their defense mechanisms...',
-                date: 'Dec 5, 2025',
                 file: 'posts/xss-bypass.html'
             },
             {
@@ -496,7 +484,6 @@
                 category: 'bug-bounty',
                 title: 'Bug Bounty Hunting: From Zero to Hero',
                 excerpt: 'Complete guide to getting started in bug bounty hunting. Learn reconnaissance, vulnerability identification, and reporting techniques...',
-                date: 'Dec 3, 2025',
                 file: 'posts/bug-bounty-tips.html'
             },
             {
@@ -504,7 +491,6 @@
                 category: 'mobile-security',
                 title: 'Android Application Penetration Testing',
                 excerpt: 'Comprehensive methodology for testing Android apps including SSL pinning bypass, root detection, and insecure data storage...',
-                date: 'Dec 1, 2025',
                 file: 'posts/mobile-app-pentest.html'
             },
             {
@@ -512,7 +498,6 @@
                 category: 'web3-security',
                 title: 'Smart Contract Security Auditing',
                 excerpt: 'Learn to identify and exploit common vulnerabilities in Ethereum smart contracts including reentrancy, integer overflow, and access control...',
-                date: 'Nov 28, 2025',
                 file: 'posts/smart-contract-audit.html'
             },
             {
@@ -520,7 +505,6 @@
                 category: 'ai-security',
                 title: 'Prompt Injection Attacks on Large Language Models',
                 excerpt: 'Exploring security vulnerabilities in AI systems, including prompt injection, jailbreaking, and data extraction techniques...',
-                date: 'Nov 25, 2025',
                 file: 'posts/llm-security.html'
             },
             {
@@ -528,7 +512,6 @@
                 category: 'network-security',
                 title: 'Network Pivoting and Lateral Movement',
                 excerpt: 'Advanced techniques for moving through networks after initial compromise. SSH tunneling, port forwarding, and proxy chains...',
-                date: 'Nov 22, 2025',
                 file: 'posts/network-pivoting.html'
             },
             {
@@ -536,7 +519,6 @@
                 category: 'vapt',
                 title: 'Complete VAPT Methodology Guide',
                 excerpt: 'End-to-end vulnerability assessment and penetration testing methodology covering reconnaissance, exploitation, and reporting...',
-                date: 'Nov 20, 2025',
                 file: 'posts/vapt-methodology.html'
             },
             {
@@ -544,7 +526,6 @@
                 category: 'misc',
                 title: 'Lesser-Known Security Tools You Should Know',
                 excerpt: 'Discover underrated security tools that can enhance your penetration testing workflow and improve your efficiency...',
-                date: 'Nov 18, 2025',
                 file: 'posts/misc-tips.html'
             }
         ];
@@ -575,7 +556,6 @@
                     <h2 class="blog-title">${post.title}</h2>
                     <p class="blog-excerpt">${post.excerpt}</p>
                     <div class="blog-meta">
-                        <span class="blog-date">${post.date}</span>
                         <a href="${post.file}" class="blog-link" onclick="event.stopPropagation()">Read More →</a>
                     </div>
                 `;
