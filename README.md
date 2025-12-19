@@ -1,6 +1,6 @@
 # 🛡️ SBOW Infosec
 
-A modern, dark-themed cybersecurity blog platform for sharing security research, penetration testing methodologies, vulnerability discoveries, and educational content.
+A modern cyber security and hacking resource platform for sharing security research, penetration testing methodologies, vulnerability discoveries, and educational content.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![GitHub Pages](https://img.shields.io/badge/hosted-GitHub%20Pages-success)
@@ -14,28 +14,6 @@ A modern, dark-themed cybersecurity blog platform for sharing security research,
 - **Easy to Customize** - Simple JavaScript-based post management
 - **No Database Required** - Pure HTML/CSS/JS for GitHub Pages deployment
 - **SEO Friendly** - Clean semantic HTML structure
-
-## 📂 Project Structure
-
-```
-cybersec-research-lab/
-├── index.html              # Main homepage with blog grid
-├── about.html              # About page
-├── posts/                  # Individual blog post files
-│   ├── sql-injection.html
-│   ├── api-security.html
-│   ├── xss-bypass.html
-│   └── ...
-├── resources/              # Resource pages
-│   ├── wordlists.html
-│   ├── methodology.html
-│   ├── checklists.html
-│   ├── tools.html
-│   ├── payloads.html
-│   ├── cheatsheets.html
-│   └── misc.html
-└── README.md              # This file
-```
 
 ## 🚀 Getting Started
 
@@ -62,14 +40,6 @@ git branch -M main
 git remote add origin https://github.com/yourusername/your-repo.git
 git push -u origin main
 ```
-
-Then enable GitHub Pages:
-1. Go to Settings → Pages
-2. Source: Deploy from branch `main`
-3. Folder: `/` (root)
-4. Save
-
-Your site will be live at: `https://yourusername.github.io/your-repo/`
 
 ## ✍️ Adding New Blog Posts
 
@@ -108,7 +78,7 @@ git push
 
 ## 🎨 Categories
 
-The blog supports 11 main categories:
+The blog supports 10 main categories:
 
 1. **Bug Bounty** - Bug hunting tips and writeups
 2. **Web Application Security** - Web vulnerabilities and exploits
@@ -120,7 +90,6 @@ The blog supports 11 main categories:
 8. **Web3 Security** - Smart contract auditing
 9. **AI and LLM Security** - AI/ML security research
 10. **CVEs** - Vulnerability disclosures and analysis
-11. **Miscellaneous** - Other security topics
 
 ## 📚 Resources Section
 
@@ -167,7 +136,6 @@ The layout uses CSS Grid for the blog posts. Adjust in the `.blog-grid` class:
 - **GitHub Pages** - Free hosting
 
 ## 🤝 Contributing
-
 Contributions are welcome! If you'd like to contribute:
 
 1. Fork the repository
@@ -177,7 +145,6 @@ Contributions are welcome! If you'd like to contribute:
 5. Open a Pull Request
 
 ## 📝 Content Guidelines
-
 All content should:
 - Be educational and for authorized testing only
 - Include proper attribution and sources
@@ -186,7 +153,6 @@ All content should:
 - Include warnings about legal and ethical considerations
 
 ## ⚖️ Legal Disclaimer
-
 This platform and all its content are provided for **educational purposes only**. 
 
 - Unauthorized access to computer systems is **illegal**
@@ -196,17 +162,13 @@ This platform and all its content are provided for **educational purposes only**
 - Content should only be used for **authorized** and **ethical** security research
 
 ## 📄 License
-
 This project is licensed under the MIT License
 
 ## 🙏 Acknowledgments
-
 - Inspired by [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
 - Built for the cybersecurity community
 - Thanks to all security researchers who share knowledge openly
-
 ---
 
 **⭐ If you find this project useful, please consider giving it a star!**
-
 Made with ❤️ by security researchers, for security researchers.
